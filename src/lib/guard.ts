@@ -29,7 +29,7 @@ export async function readJson<T>(request: Request, max = MAX_BODY): Promise<T |
  * cut to its /64). On Vercel the edge overwrites these headers, so the value
  * is the caller's real address.
  */
-export function clientIp(request: Request) {
+export function clientNet(request: Request) {
   const fwd = request.headers.get("x-forwarded-for");
   const ip = (fwd ? fwd.split(",")[0] : (request.headers.get("x-real-ip") ?? "local")).trim();
   return networkKey(ip.slice(0, 64).replace(/[^0-9a-fA-F:.]/g, "")) || "local";
@@ -51,6 +51,26 @@ export function allow(bucket: string, key: string, max: number, windowSec = 60) 
   }
   entry.count += 1;
   return entry.count <= max;
+}
+
+/**
+ * Weighted budget: `cost` units against `max` per window. Unlike `allow`,
+ * one request can spend several units, so heavy reads use up a caller's
+ * share faster. In memory only; a full map never fails open (oldest windows
+ * are dropped, the current one is kept).
+ */
+export function spend(bucket: string, key: string, cost: number, max: number, windowSec: number) {
+  const slot = Math.floor(Date.now() / 1000 / windowSec);
+  const id = `${bucket}:${key}`;
+  const entry = windows.get(id);
+  if (!entry || entry.slot !== slot) {
+    if (windows.size > 5000) for (const [k, v] of windows) if (v.slot !== slot) windows.delete(k);
+    windows.set(id, { slot, count: cost });
+    return cost <= max;
+  }
+  if (entry.count + cost > max) return false;
+  entry.count += cost;
+  return true;
 }
 
 export const tooMany = () => NextResponse.json({ error: "Too many requests. Slow down a little." }, { status: 429 });

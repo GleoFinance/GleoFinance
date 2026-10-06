@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { BRAND, CHAIN, isAddress } from "@/config/brand";
-import { allow, badBody, clientIp, readJson, tooMany } from "@/lib/guard";
+import { allow, badBody, clientNet, readJson, tooMany } from "@/lib/guard";
 import { parseMessage } from "@/lib/practice";
 import { recoverSigner } from "@/lib/verify";
 
@@ -14,7 +14,7 @@ const ALLOWED_DOMAINS = new Set([BRAND.domain, `www.${BRAND.domain}`]);
  * stored. Local hosts count only outside production on Vercel.
  */
 export async function POST(request: Request) {
-  if (!allow("verify", clientIp(request), 60)) return tooMany();
+  if (!allow("verify", clientNet(request), 60)) return tooMany();
   if (Number(request.headers.get("content-length") ?? 0) > 4096) return NextResponse.json({ error: "Body too large." }, { status: 413 });
   const body = await readJson<{ message?: unknown; signature?: unknown }>(request, 4096);
   const message = typeof body?.message === "string" ? body.message : "";
