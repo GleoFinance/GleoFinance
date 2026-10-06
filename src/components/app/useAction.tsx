@@ -30,7 +30,7 @@ export function Feedback({ error, done }: { error: string | null; done: string |
         {error}
       </p>
     );
-  if (done) return <p className="mt-3 text-[13.5px] font-semibold text-sea-deep">{done}</p>;
+  if (done) return <p className="mt-3 text-[14px] font-semibold text-up">{done}</p>;
   return null;
 }
 

@@ -70,7 +70,7 @@ export function AssetTable() {
 
       <ul className="mt-4 grid grid-cols-1 gap-3 md:hidden">
         {rows.map((r) => (
-          <li key={r.address} className="rounded-2xl border border-line-2 bg-card p-4">
+          <li key={r.address} className="border border-line bg-paper p-4">
             <div className="flex items-start justify-between gap-3">
               <div className="min-w-0">
                 <p className="font-mono text-[15px] font-semibold">{r.symbol}</p>

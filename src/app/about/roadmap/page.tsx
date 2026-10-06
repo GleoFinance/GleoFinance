@@ -1,10 +1,13 @@
-import type { Metadata } from "next";
-import { ButtonLink, CtaBand, PageHero, Section, Tag } from "@/components/ui";
+import { pageMeta } from "@/lib/seo";
+import { ButtonLink, Container, CtaBand, Eyebrow, PageHero, Tag } from "@/components/ui";
 
-export const metadata: Metadata = {
-  title: "Roadmap",
-  description: "What Gleo plans to build from Q4 2026 to Q3 2027. Every item is marked Planned until it ships.",
-};
+export const metadata = pageMeta({
+  path: "/about/roadmap",
+  title: "Gleo Roadmap 2026–2027: Payments, Issuance, Markets",
+  description:
+    "The Gleo roadmap from Q4 2026 to Q3 2027: payments, asset issuance, anchors and markets. Every item stays marked Planned until it ships. See what is next.",
+  keywords: ["Gleo roadmap", "Robinhood Chain roadmap", "tokenization roadmap"],
+});
 
 const QUARTERS: { quarter: string; theme: string; items: { title: string; body: string; done?: boolean }[] }[] = [
   {
@@ -51,42 +54,46 @@ export default function RoadmapPage() {
   return (
     <>
       <PageHero
-        title="Where Gleo is going"
-        lead="A year of plans, laid out by quarter. Items move when plans change; they are not quietly removed. Anything not marked Shipped is a plan, not a promise."
+        eyebrow="Roadmap"
+        title="The Gleo roadmap, quarter by quarter"
+        lead="The Gleo roadmap lays out a year of plans by quarter. Items move when plans change; they are never quietly removed. Anything not marked Shipped is a plan, not a promise."
         art="calendar"
+        crumbs={[
+          { name: "About", path: "/about" },
+          { name: "Roadmap", path: "/about/roadmap" },
+        ]}
+        actions={<ButtonLink href="/blog/roadmap-notes-autumn-2026">Read the autumn 2026 roadmap notes</ButtonLink>}
       />
-      <Section>
-        <ol className="relative grid grid-cols-1 gap-12">
-          {QUARTERS.map((q) => (
-            <li key={q.quarter} className="grid grid-cols-1 gap-6 border-t border-line-2 pt-8 lg:grid-cols-[260px_minmax(0,1fr)]">
-              <div className="min-w-0">
-                <p className="font-display text-4xl font-bold tracking-tight">{q.quarter}</p>
-                <p className="mt-2 text-ink-2">{q.theme}</p>
-              </div>
-              <ul className="grid min-w-0 grid-cols-1 gap-4 md:grid-cols-2">
-                {q.items.map((it) => (
-                  <li key={it.title} className="min-w-0 rounded-2xl border border-line-2 bg-card p-5">
-                    <div className="flex flex-wrap items-center justify-between gap-2">
-                      <h3 className="min-w-0 text-[17px] font-bold">{it.title}</h3>
-                      {it.done ? <Tag tone="live">Shipped</Tag> : <Tag tone="plan" />}
-                    </div>
-                    <p className="mt-2 text-[14.5px] leading-relaxed text-ink-2">{it.body}</p>
-                  </li>
-                ))}
-              </ul>
-            </li>
-          ))}
-        </ol>
-      </Section>
+      {QUARTERS.map((q, i) => (
+        <section key={q.quarter} className={i % 2 === 0 ? "bg-paper-2 py-16 lg:py-20" : "bg-paper py-16 lg:py-20"}>
+          <Container className="grid grid-cols-1 gap-10 lg:grid-cols-[minmax(0,1fr)_minmax(0,2.2fr)] lg:gap-16">
+            <div className="min-w-0">
+              <Eyebrow>{q.theme}</Eyebrow>
+              <h2 className="t-h2">{q.quarter}</h2>
+            </div>
+            <ul className="grid min-w-0 grid-cols-1 gap-6 md:grid-cols-2">
+              {q.items.map((it) => (
+                <li key={it.title} className="min-w-0 border border-line bg-paper p-8">
+                  <div className="flex flex-wrap items-center justify-between gap-2">
+                    <h3 className="min-w-0 text-[17px] leading-snug font-semibold">{it.title}</h3>
+                    {it.done ? <Tag tone="live">Shipped</Tag> : <Tag tone="plan" />}
+                  </div>
+                  <p className="mt-3 text-[15px] leading-relaxed text-ink-2">{it.body}</p>
+                </li>
+              ))}
+            </ul>
+          </Container>
+        </section>
+      ))}
       <CtaBand
-        title="Try what has shipped"
+        eyebrow="Already live"
+        title="Try what has shipped on Gleo"
+        body="Send, the network panel and the asset explorer read and move real data on Robinhood Chain today."
         actions={
           <>
-            <ButtonLink href="/send" variant="fog">
-              Send
-            </ButtonLink>
-            <ButtonLink href="/assets" variant="line" className="border-fog/30 text-fog hover:border-fog">
-              Assets
+            <ButtonLink href="/send">Send USDG or ETH</ButtonLink>
+            <ButtonLink href="/assets" variant="line">
+              Browse verified assets
             </ButtonLink>
           </>
         }

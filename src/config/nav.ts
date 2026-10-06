@@ -2,11 +2,20 @@
 // all read from here, so a route is added in one place.
 
 export type NavLink = { href: string; label: string; note?: string };
-export type NavMenu = { label: string; links: NavLink[]; feature?: { href: string; title: string; body: string } };
+export type NavMenu = {
+  label: string;
+  links: NavLink[];
+  /** Column headings in the desktop panel; links are split after `split` items. */
+  heads?: [string, string];
+  split?: number;
+  feature?: { eyebrow: string; href: string; title: string; body: string; cta: string };
+};
 
 export const MENUS: NavMenu[] = [
   {
-    label: "Network",
+    label: "About",
+    heads: ["Learn", "Gleo"],
+    split: 3,
     links: [
       { href: "/learn/intro", label: "What is Gleo", note: "The network in ten minutes" },
       { href: "/learn", label: "Learn", note: "Guides from first principles" },
@@ -14,10 +23,18 @@ export const MENUS: NavMenu[] = [
       { href: "/about", label: "Mission", note: "Why Gleo exists" },
       { href: "/about/careers", label: "Careers", note: "Work on open money rails" },
     ],
-    feature: { href: "/network", title: "Watch the chain live", body: "Block height, block time and what a transfer costs right now." },
+    feature: {
+      eyebrow: "Live now",
+      href: "/network",
+      title: "Robinhood Chain, read live",
+      body: "Block height, block time and the real cost of a USDG transfer, refreshed every few seconds.",
+      cta: "Open the network panel",
+    },
   },
   {
     label: "Use cases",
+    heads: ["Gleo for", "Explore"],
+    split: 5,
     links: [
       { href: "/use-cases/payments", label: "Payments", note: "Move money between countries" },
       { href: "/use-cases/tokenization", label: "Asset tokenization", note: "Issue real-world assets on-chain" },
@@ -29,10 +46,18 @@ export const MENUS: NavMenu[] = [
       { href: "/products", label: "Products and tools", note: "Everything we ship, in one list" },
       { href: "/ecosystem", label: "Ecosystem", note: "What Gleo plugs into today" },
     ],
-    feature: { href: "/use-cases", title: "All use cases", body: "Four jobs Gleo is built to do, and who each one is for." },
+    feature: {
+      eyebrow: "Field scenario",
+      href: "/case-studies",
+      title: "Worked examples, start to finish",
+      body: "Payroll, remittance and fund issuance walked through step by step, each one labelled as illustrative.",
+      cta: "Read the scenarios",
+    },
   },
   {
     label: "Build",
+    heads: ["Start building", "Solutions"],
+    split: 3,
     links: [
       { href: "/developers", label: "Developers", note: "Docs map, RPC, chain details" },
       { href: "/smart-contracts", label: "Smart contracts", note: "Gleo Contracts on Robinhood Chain" },
@@ -40,10 +65,18 @@ export const MENUS: NavMenu[] = [
       { href: "/institutions", label: "For institutions", note: "Issuance and settlement" },
       { href: "/fintechs", label: "For fintechs and wallets", note: "Payment rails for your product" },
     ],
-    feature: { href: "/send", title: "Send a real payment", body: "Move ETH or USDG to any address from your own wallet." },
+    feature: {
+      eyebrow: "Try it",
+      href: "/send",
+      title: "Send a real payment",
+      body: "Move ETH or USDG to any address on Robinhood Chain from your own wallet, with the fee shown first.",
+      cta: "Open Send",
+    },
   },
   {
     label: "Community",
+    heads: ["Join in", "Resources"],
+    split: 2,
     links: [
       { href: "/community", label: "Community", note: "Where the conversation happens" },
       { href: "/events", label: "Events", note: "Meetups and office hours" },

@@ -1,19 +1,27 @@
-import type { Metadata } from "next";
 import Link from "next/link";
 import { BRAND, CHAIN } from "@/config/brand";
 import { LongForm } from "@/components/ui";
+import { pageMeta } from "@/lib/seo";
 
-export const metadata: Metadata = {
-  title: "Terms of service",
-  description: `The terms for using the ${BRAND.name} website and its tools.`,
-};
+export const metadata = pageMeta({
+  path: "/terms-of-service",
+  title: "Terms of Service for the Website and App Tools",
+  description:
+    "The terms for using the Gleo website and its payment, swap and practice tools on Robinhood Chain: eligibility, risks, your wallet and our limits. Read first.",
+  keywords: ["terms of service", "terms of use", "crypto risk disclosure", "Gleo app terms", "Robinhood Chain"],
+});
 
 export default function TermsPage() {
   return (
     <LongForm
-      title="Terms of service"
-      updated="October 5, 2026"
-      lead={`These terms apply when you use ${BRAND.domain} and its tools. By using the site you agree to them.`}
+      eyebrow="Legal"
+      title="Gleo terms of service"
+      updated="October 6, 2026"
+      lead={
+        <p>
+          These Gleo terms of service apply when you use {BRAND.domain} and its tools. By using the site you agree to them.
+        </p>
+      }
     >
       <h2>Eligibility</h2>
       <p>You must be old enough to enter a binding contract where you live, and you must not be barred from using the services by sanctions or other law.</p>

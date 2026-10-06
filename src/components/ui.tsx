@@ -1,21 +1,28 @@
 import Link from "next/link";
-import { ArrowRight, ArrowUpRight, Plus } from "lucide-react";
+import { ArrowRight, ArrowUpRight, ChevronDown } from "lucide-react";
 import { Art, type ArtName } from "@/components/art";
+import { JsonLd } from "@/components/JsonLd";
+import { breadcrumbLd, type Crumb } from "@/lib/seo";
 
-/* Shared page vocabulary. Pages are composed from these so the whole site
-   keeps one rhythm: left-aligned heads, hairline ledgers, few cards. */
+/* Shared page vocabulary. Every page is composed from these so the site keeps
+   one rhythm: an eyebrow line, a serif heading, a sans lead, square cards with
+   hairline borders, black pills with a yellow arrow disc. */
 
 export function Container({ children, className = "" }: { children: React.ReactNode; className?: string }) {
-  return <div className={`mx-auto w-full max-w-[1280px] px-4 sm:px-6 ${className}`}>{children}</div>;
+  return <div className={`mx-auto w-full max-w-[1440px] px-[var(--gutter)] ${className}`}>{children}</div>;
 }
 
-type Tone = "paper" | "card" | "night" | "sea";
+export type Tone = "paper" | "gray" | "card" | "night" | "sand" | "lilac" | "sea";
 const toneClass: Record<Tone, string> = {
   paper: "bg-paper text-ink",
-  card: "bg-card text-ink",
+  gray: "bg-paper-2 text-ink",
+  card: "bg-paper-2 text-ink",
   night: "bg-night text-fog",
-  sea: "bg-sea text-white",
+  sand: "bg-sand text-ink",
+  lilac: "bg-lilac text-ink",
+  sea: "bg-sea text-ink",
 };
+export const isDark = (tone: Tone) => tone === "night";
 
 export function Section({
   children,
@@ -31,39 +38,64 @@ export function Section({
   tight?: boolean;
 }) {
   return (
-    <section id={id} className={`${toneClass[tone]} ${tight ? "py-12 sm:py-16" : "py-16 sm:py-24"} ${className}`}>
+    <section id={id} className={`${toneClass[tone]} ${tight ? "py-12 lg:py-16" : "py-16 lg:py-20"} ${className}`}>
       <Container>{children}</Container>
     </section>
   );
 }
 
-/** Section heading: title on the left, a short lead (and an action) beside it on wide screens. */
+export function Eyebrow({ children, className = "" }: { children: React.ReactNode; className?: string }) {
+  return <p className={`t-eyebrow mb-4 ${className}`}>{children}</p>;
+}
+
+/** Section heading: eyebrow, serif title, lead underneath (or beside it with `split`). */
 export function SectionHead({
+  eyebrow,
   title,
   lead,
   action,
   dark = false,
+  split = false,
+  center = false,
   className = "",
 }: {
+  eyebrow?: React.ReactNode;
   title: React.ReactNode;
   lead?: React.ReactNode;
   action?: React.ReactNode;
   dark?: boolean;
+  split?: boolean;
+  center?: boolean;
   className?: string;
 }) {
-  return (
-    <div className={`grid grid-cols-1 gap-5 lg:grid-cols-[minmax(0,1.1fr)_minmax(0,1fr)] lg:items-end lg:gap-12 ${className}`}>
-      <h2 className="font-display text-[clamp(1.9rem,3.6vw,3rem)] leading-[1.05] font-bold tracking-[-0.02em] text-balance">{title}</h2>
-      {lead || action ? (
+  const leadClass = `t-lead ${dark ? "text-fog-2" : "text-ink-2"}`;
+  if (split) {
+    return (
+      <div className={`grid grid-cols-1 gap-6 lg:grid-cols-2 lg:gap-16 ${className}`}>
         <div className="min-w-0">
-          {lead ? <p className={`max-w-xl text-[17px] leading-relaxed ${dark ? "text-fog-2" : "text-ink-2"}`}>{lead}</p> : null}
-          {action ? <div className="mt-5">{action}</div> : null}
+          {eyebrow ? <Eyebrow>{eyebrow}</Eyebrow> : null}
+          <h2 className="t-h2 text-balance">{title}</h2>
         </div>
-      ) : null}
+        {lead || action ? (
+          <div className="min-w-0 lg:pt-9">
+            {lead ? <div className={`${leadClass} max-w-[600px]`}>{lead}</div> : null}
+            {action ? <div className="mt-6">{action}</div> : null}
+          </div>
+        ) : null}
+      </div>
+    );
+  }
+  return (
+    <div className={`${center ? "mx-auto text-center" : ""} max-w-[792px] ${className}`}>
+      {eyebrow ? <Eyebrow>{eyebrow}</Eyebrow> : null}
+      <h2 className="t-h2 text-balance">{title}</h2>
+      {lead ? <div className={`${leadClass} mt-6`}>{lead}</div> : null}
+      {action ? <div className={`mt-6 flex flex-wrap gap-3 ${center ? "justify-center" : ""}`}>{action}</div> : null}
     </div>
   );
 }
 
+/** Black (or outlined) pill with the yellow arrow disc. */
 export function ButtonLink({
   href,
   children,
@@ -76,26 +108,64 @@ export function ButtonLink({
   className?: string;
 }) {
   const external = /^https?:/.test(href);
-  const cls = `btn btn-${variant} h-11 px-5 text-[15px] ${className}`;
+  const tone = variant === "line" ? "pill-line" : variant === "fog" ? "pill-fog" : "pill-ink";
+  const cls = `pill ${tone} ${className}`;
+  const disc = <span className="pill-disc">{external ? <ArrowUpRight className="size-4" /> : <ArrowRight className="size-4" />}</span>;
   if (external) {
     return (
       <a href={href} target="_blank" rel="noreferrer" className={cls}>
         {children}
-        <ArrowUpRight className="size-4" />
+        {disc}
       </a>
     );
   }
   return (
     <Link href={href} className={cls}>
       {children}
-      <ArrowRight className="size-4" />
+      {disc}
+    </Link>
+  );
+}
+
+/** Plain text link led by a small yellow arrow. */
+export function TextLink({
+  href,
+  children,
+  dark = false,
+  className = "",
+}: {
+  href: string;
+  children: React.ReactNode;
+  dark?: boolean;
+  className?: string;
+}) {
+  const external = /^https?:/.test(href);
+  const cls = `group inline-flex items-center gap-2 text-[16px] leading-relaxed ${dark ? "text-fog" : "text-ink"} ${className}`;
+  const arrow = external ? (
+    <ArrowUpRight className={`size-4 shrink-0 ${dark ? "text-sea" : "text-ink"}`} />
+  ) : (
+    <ArrowRight className={`size-4 shrink-0 transition-transform group-hover:translate-x-0.5 ${dark ? "text-sea" : "text-ink"}`} />
+  );
+  const label = <span className="underline-offset-4 group-hover:underline">{children}</span>;
+  if (external) {
+    return (
+      <a href={href} target="_blank" rel="noreferrer" className={cls}>
+        {arrow}
+        {label}
+      </a>
+    );
+  }
+  return (
+    <Link href={href} className={cls}>
+      {arrow}
+      {label}
     </Link>
   );
 }
 
 export type TagTone = "live" | "practice" | "target" | "plan" | "example";
 const tagClass: Record<TagTone, string> = {
-  live: "bg-sea-soft text-sea-deep",
+  live: "bg-sea text-ink",
   practice: "bg-flare-soft text-flare-deep",
   target: "bg-paper-2 text-ink-2",
   plan: "bg-paper-2 text-ink-2",
@@ -111,41 +181,59 @@ const tagText: Record<TagTone, string> = {
 
 export function Tag({ tone, children }: { tone: TagTone; children?: React.ReactNode }) {
   return (
-    <span className={`inline-flex shrink-0 items-center gap-1.5 rounded-full px-2 py-0.5 font-mono text-[10.5px] tracking-wide uppercase ${tagClass[tone]}`}>
-      {tone === "live" ? <span className="live-dot size-1.5 rounded-full bg-sea" /> : null}
+    <span className={`inline-flex shrink-0 items-center gap-1.5 rounded-full px-2.5 py-0.5 text-[11px] leading-[1.6] font-semibold ${tagClass[tone]}`}>
+      {tone === "live" ? <span className="live-dot size-1.5 rounded-full bg-ink" /> : null}
       {children ?? tagText[tone]}
     </span>
   );
 }
 
-/** Page opener: words on the left, a drawing on the right. */
+export type HeroTone = "paper" | "night" | "lilac" | "sea" | "gray" | "teal";
+const heroTone: Record<HeroTone, string> = {
+  paper: "bg-paper text-ink",
+  night: "bg-night text-fog",
+  lilac: "bg-lilac text-ink",
+  sea: "bg-sea text-ink",
+  gray: "bg-paper-2 text-ink",
+  teal: "bg-teal text-ink",
+};
+
+/** Page opener: eyebrow, serif H1, lead and pills on the left; a drawing on the right. */
 export function PageHero({
+  eyebrow,
   title,
   lead,
   actions,
   art,
   tone = "paper",
   meta,
+  crumbs,
 }: {
+  eyebrow?: React.ReactNode;
   title: React.ReactNode;
   lead: React.ReactNode;
   actions?: React.ReactNode;
   art?: ArtName;
-  tone?: "paper" | "night";
+  tone?: HeroTone;
   meta?: React.ReactNode;
+  crumbs?: Crumb[];
 }) {
   const night = tone === "night";
   return (
-    <section className={`${night ? "meridians-night bg-night text-fog" : "meridians bg-paper text-ink"} border-b border-line`}>
-      <Container className="grid grid-cols-1 items-center gap-10 py-14 sm:py-20 lg:grid-cols-[minmax(0,1.15fr)_minmax(0,1fr)] lg:gap-16">
-        <div className="min-w-0">
+    <section className={heroTone[tone]}>
+      {crumbs ? <JsonLd data={breadcrumbLd(crumbs)} /> : null}
+      <Container
+        className={`grid min-h-[min(560px,calc(100svh-var(--header-h)))] grid-cols-1 items-center gap-10 py-16 lg:py-24 ${art ? "lg:grid-cols-[minmax(0,1fr)_minmax(0,0.85fr)] lg:gap-20" : ""}`}
+      >
+        <div className="min-w-0 max-w-[680px]">
           {meta ? <div className="mb-5 flex flex-wrap items-center gap-2">{meta}</div> : null}
-          <h1 className="font-display text-[clamp(2.4rem,5.4vw,4.6rem)] leading-[0.98] font-bold tracking-[-0.03em] text-balance">{title}</h1>
-          <p className={`mt-6 max-w-xl text-[18px] leading-relaxed ${night ? "text-fog-2" : "text-ink-2"}`}>{lead}</p>
+          {eyebrow ? <Eyebrow>{eyebrow}</Eyebrow> : null}
+          <h1 className="t-h1 text-balance">{title}</h1>
+          <div className={`t-lead mt-8 ${night ? "text-fog-2" : tone === "paper" || tone === "gray" ? "text-ink-2" : "text-ink/80"}`}>{lead}</div>
           {actions ? <div className="mt-8 flex flex-wrap gap-3">{actions}</div> : null}
         </div>
         {art ? (
-          <div className="min-w-0">
+          <div className="mx-auto w-full max-w-[460px] min-w-0">
             <Art name={art} night={night} />
           </div>
         ) : null}
@@ -154,7 +242,7 @@ export function PageHero({
   );
 }
 
-/** Ledger-style list: numbered rows separated by hairlines. */
+/** Hairline list: title and body per row, optional link. */
 export function Rows({
   items,
   dark = false,
@@ -166,22 +254,22 @@ export function Rows({
   numbered?: boolean;
   cols?: 1 | 2;
 }) {
-  const line = dark ? "border-fog/15" : "border-line-2";
+  const line = dark ? "border-fog/20" : "border-line-2";
   return (
     <ol className={`grid grid-cols-1 ${cols === 2 ? "md:grid-cols-2 md:gap-x-12" : ""}`}>
       {items.map((item, i) => {
         const inner = (
-          <div className={`grid grid-cols-[auto_minmax(0,1fr)] gap-x-5 border-t ${line} py-6`}>
-            <span className={`pt-1 font-mono text-[12px] ${dark ? "text-fog-2" : "text-ink-3"}`}>{numbered ? String(i + 1).padStart(2, "0") : "—"}</span>
+          <div className={`grid grid-cols-[auto_minmax(0,1fr)] gap-x-6 border-t ${line} py-7`}>
+            <span className={`pt-0.5 text-[14px] tabular-nums ${dark ? "text-fog-2" : "text-ink-3"}`}>{numbered ? String(i + 1).padStart(2, "0") : "—"}</span>
             <div className="min-w-0">
               <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
-                <h3 className="font-display text-[1.3rem] leading-snug font-semibold">{item.title}</h3>
+                <h3 className="t-h3">{item.title}</h3>
                 {item.meta}
               </div>
-              <div className={`mt-2 text-[15.5px] leading-relaxed ${dark ? "text-fog-2" : "text-ink-2"}`}>{item.body}</div>
+              <div className={`t-lead mt-2 ${dark ? "text-fog-2" : "text-ink-2"}`}>{item.body}</div>
               {item.href ? (
-                <span className={`mt-3 inline-flex items-center gap-1 text-sm font-semibold ${dark ? "text-fog" : "text-sea-deep"}`}>
-                  Read more <ArrowRight className="size-3.5" />
+                <span className={`mt-3 inline-flex items-center gap-2 text-[16px] ${dark ? "text-fog" : "text-ink"}`}>
+                  <ArrowRight className={`size-4 ${dark ? "text-sea" : ""}`} /> Read more
                 </span>
               ) : null}
             </div>
@@ -205,49 +293,46 @@ export function Rows({
 
 /** Words beside a drawing. */
 export function Split({
+  eyebrow,
   title,
   children,
   art,
   reverse = false,
   dark = false,
+  as = "h2",
 }: {
+  eyebrow?: React.ReactNode;
   title: React.ReactNode;
   children: React.ReactNode;
   art: ArtName;
   reverse?: boolean;
   dark?: boolean;
+  as?: "h2" | "h3";
 }) {
+  const H = as;
   return (
-    <div className="grid grid-cols-1 items-center gap-10 lg:grid-cols-2 lg:gap-16">
+    <div className="grid grid-cols-1 items-center gap-10 lg:grid-cols-2 lg:gap-24">
       <div className={`min-w-0 ${reverse ? "lg:order-2" : ""}`}>
-        <h2 className="font-display text-[clamp(1.8rem,3.2vw,2.6rem)] leading-[1.08] font-bold tracking-[-0.02em] text-balance">{title}</h2>
-        <div className={`mt-5 space-y-4 text-[16.5px] leading-relaxed ${dark ? "text-fog-2" : "text-ink-2"}`}>{children}</div>
+        {eyebrow ? <Eyebrow>{eyebrow}</Eyebrow> : null}
+        <H className="t-h2 text-balance">{title}</H>
+        <div className={`t-lead mt-6 space-y-4 ${dark ? "text-fog-2" : "text-ink-2"}`}>{children}</div>
       </div>
-      <div className="min-w-0">
+      <div className="mx-auto w-full max-w-[520px] min-w-0">
         <Art name={art} night={dark} />
       </div>
     </div>
   );
 }
 
-/** A left-to-right sequence with a connecting rule. */
+/** A left-to-right sequence. */
 export function Steps({ steps, dark = false }: { steps: { title: string; body: React.ReactNode }[]; dark?: boolean }) {
   return (
-    <ol className={`grid grid-cols-1 gap-8 sm:grid-cols-2 ${steps.length >= 4 ? "lg:grid-cols-4" : "lg:grid-cols-3"}`}>
+    <ol className={`grid grid-cols-1 gap-6 sm:grid-cols-2 ${steps.length >= 4 ? "lg:grid-cols-4" : "lg:grid-cols-3"}`}>
       {steps.map((step, i) => (
-        <li key={step.title} className="min-w-0">
-          <div className="flex items-center gap-3">
-            <span
-              className={`flex size-9 shrink-0 items-center justify-center rounded-full font-mono text-sm font-semibold ${
-                dark ? "bg-fog text-ink" : "bg-ink text-fog"
-              }`}
-            >
-              {i + 1}
-            </span>
-            <span className={`h-px flex-1 ${dark ? "bg-fog/20" : "bg-line-2"}`} />
-          </div>
-          <h3 className="mt-4 text-[17px] font-bold">{step.title}</h3>
-          <div className={`mt-1.5 text-[15px] leading-relaxed ${dark ? "text-fog-2" : "text-ink-2"}`}>{step.body}</div>
+        <li key={step.title} className={`min-w-0 border p-8 ${dark ? "border-fog/25 bg-night-2" : "border-line bg-paper"}`}>
+          <span className="flex size-8 items-center justify-center rounded-full bg-sea text-[14px] font-semibold text-ink">{i + 1}</span>
+          <h3 className="mt-6 text-[17px] leading-snug font-semibold">{step.title}</h3>
+          <div className={`mt-3 text-[16px] leading-relaxed ${dark ? "text-fog-2" : "text-ink-2"}`}>{step.body}</div>
         </li>
       ))}
     </ol>
@@ -256,44 +341,53 @@ export function Steps({ steps, dark = false }: { steps: { title: string; body: R
 
 export function Faq({ items, dark = false }: { items: { q: string; a: React.ReactNode }[]; dark?: boolean }) {
   return (
-    <div className={`divide-y border-y ${dark ? "divide-fog/15 border-fog/15" : "divide-line-2 border-line-2"}`}>
+    <div className={`divide-y border-y ${dark ? "divide-fog/15 border-fog/15" : "divide-line border-line"}`}>
       {items.map((item) => (
-        <details key={item.q} className="group py-5">
-          <summary className="flex cursor-pointer list-none items-start justify-between gap-6 text-[17px] font-semibold [&::-webkit-details-marker]:hidden">
-            <span className="min-w-0">{item.q}</span>
-            <Plus className="mt-1 size-4 shrink-0 transition-transform group-open:rotate-45" />
+        <details key={item.q} className="group py-6">
+          <summary className="flex cursor-pointer list-none items-start justify-between gap-6 text-[18px] leading-snug font-semibold [&::-webkit-details-marker]:hidden">
+            <h3 className="min-w-0">{item.q}</h3>
+            <span className={`flex size-8 shrink-0 items-center justify-center rounded-full border ${dark ? "border-fog/40" : "border-ink"}`}>
+              <ChevronDown className="size-4 transition-transform group-open:rotate-180" />
+            </span>
           </summary>
-          <div className={`mt-3 max-w-3xl text-[15.5px] leading-relaxed ${dark ? "text-fog-2" : "text-ink-2"}`}>{item.a}</div>
+          <div className={`t-lead mt-4 max-w-3xl ${dark ? "text-fog-2" : "text-ink-2"}`}>{item.a}</div>
         </details>
       ))}
     </div>
   );
 }
 
-/** Bordered link tiles; used for "where next" lists, not as decoration. */
+/** Square bordered cards for "where next" lists. */
 export function LinkTiles({
   items,
   cols = 3,
+  dark = false,
 }: {
   items: { href: string; title: string; body: React.ReactNode; tag?: TagTone; label?: string }[];
   cols?: 2 | 3 | 4;
+  dark?: boolean;
 }) {
   const grid = cols === 4 ? "sm:grid-cols-2 lg:grid-cols-4" : cols === 2 ? "md:grid-cols-2" : "sm:grid-cols-2 lg:grid-cols-3";
   return (
-    <ul className={`grid grid-cols-1 gap-4 ${grid}`}>
+    <ul className={`grid grid-cols-1 gap-6 ${grid}`}>
       {items.map((item) => {
         const external = /^https?:/.test(item.href);
         const body = (
           <>
             <div className="flex items-start justify-between gap-3">
-              <h3 className="min-w-0 text-[17px] leading-snug font-bold">{item.title}</h3>
-              {item.tag ? <Tag tone={item.tag} /> : external ? <ArrowUpRight className="size-4 shrink-0 text-ink-3" /> : <ArrowRight className="size-4 shrink-0 text-ink-3" />}
+              <h3 className="min-w-0 text-[18px] leading-snug font-semibold">{item.title}</h3>
+              {item.tag ? <Tag tone={item.tag} /> : null}
             </div>
-            <div className="mt-2 text-[14.5px] leading-relaxed text-ink-2">{item.body}</div>
-            {item.label ? <p className="mt-4 text-sm font-semibold text-sea-deep">{item.label}</p> : null}
+            <div className={`mt-4 flex-1 text-[16px] leading-relaxed ${dark ? "text-fog-2" : "text-ink-2"}`}>{item.body}</div>
+            <span className={`mt-6 inline-flex items-center gap-2 text-[16px] ${dark ? "text-fog" : "text-ink"}`}>
+              {external ? <ArrowUpRight className={`size-4 ${dark ? "text-sea" : ""}`} /> : <ArrowRight className={`size-4 ${dark ? "text-sea" : ""}`} />}
+              {item.label ?? "Learn more"}
+            </span>
           </>
         );
-        const cls = "flex h-full flex-col rounded-2xl border border-line-2 bg-card p-5 transition-colors hover:border-ink";
+        const cls = `flex h-full flex-col border p-8 transition-colors lg:p-10 ${
+          dark ? "border-fog/25 bg-night-2 hover:border-fog" : "border-line bg-paper hover:border-ink"
+        }`;
         return (
           <li key={item.href + item.title} className="min-w-0">
             {external ? (
@@ -312,22 +406,58 @@ export function LinkTiles({
   );
 }
 
-/** Closing band at the foot of a page. */
-export function CtaBand({ title, body, actions }: { title: React.ReactNode; body?: React.ReactNode; actions: React.ReactNode }) {
+/** Plain square cards (no link) on a gray band. */
+export function InfoCards({
+  items,
+  cols = 4,
+}: {
+  items: { title: React.ReactNode; body: React.ReactNode; meta?: React.ReactNode }[];
+  cols?: 2 | 3 | 4;
+}) {
+  const grid = cols === 4 ? "sm:grid-cols-2 lg:grid-cols-4" : cols === 2 ? "md:grid-cols-2" : "sm:grid-cols-2 lg:grid-cols-3";
   return (
-    <section className="meridians-night bg-night text-fog">
-      <Container className="grid grid-cols-1 gap-8 py-16 sm:py-20 lg:grid-cols-[minmax(0,1.3fr)_minmax(0,1fr)] lg:items-end">
-        <h2 className="font-display text-[clamp(2rem,4vw,3.4rem)] leading-[1.02] font-bold tracking-[-0.025em] text-balance">{title}</h2>
-        <div className="min-w-0">
-          {body ? <p className="text-[17px] leading-relaxed text-fog-2">{body}</p> : null}
-          <div className="mt-6 flex flex-wrap gap-3">{actions}</div>
+    <ul className={`grid grid-cols-1 gap-6 ${grid}`}>
+      {items.map((item, i) => (
+        <li key={i} className="min-w-0 border border-line bg-paper p-8 lg:p-10">
+          <div className="flex flex-wrap items-center gap-2">
+            <h3 className="text-[16px] leading-snug font-semibold">{item.title}</h3>
+            {item.meta}
+          </div>
+          <div className="mt-4 text-[16px] leading-relaxed text-ink-2">{item.body}</div>
+        </li>
+      ))}
+    </ul>
+  );
+}
+
+/** Closing band: centred heading over a drifting yellow light, pills below. */
+export function CtaBand({
+  eyebrow,
+  title,
+  body,
+  actions,
+}: {
+  eyebrow?: React.ReactNode;
+  title: React.ReactNode;
+  body?: React.ReactNode;
+  actions: React.ReactNode;
+}) {
+  return (
+    <section className="relative isolate overflow-hidden bg-paper text-ink">
+      <div className="glow-field -z-10" aria-hidden="true" />
+      <Container className="py-20 lg:py-24">
+        <div className="mx-auto max-w-[612px] text-center">
+          {eyebrow ? <Eyebrow>{eyebrow}</Eyebrow> : null}
+          <h2 className="t-h2 text-balance">{title}</h2>
+          {body ? <p className="t-lead mt-6 text-ink-2">{body}</p> : null}
+          <div className="mt-8 flex flex-wrap justify-center gap-3">{actions}</div>
         </div>
       </Container>
     </section>
   );
 }
 
-/** Big figures with an honest label under each one. */
+/** Stat grid: square cells with a hairline frame, big serif numbers, honest labels. */
 export function Figures({
   items,
   dark = false,
@@ -336,15 +466,19 @@ export function Figures({
   dark?: boolean;
 }) {
   return (
-    <dl className={`grid grid-cols-1 border-t sm:grid-cols-2 ${items.length >= 4 ? "lg:grid-cols-4" : "lg:grid-cols-3"} ${dark ? "border-fog/15" : "border-line-2"}`}>
+    <dl
+      className={`grid grid-cols-1 border-t border-l sm:grid-cols-2 ${items.length >= 4 ? "xl:grid-cols-4" : "lg:grid-cols-3"} ${
+        dark ? "border-fog/30" : "border-rule"
+      }`}
+    >
       {items.map((item) => (
-        <div key={item.label} className={`min-w-0 border-b py-6 sm:pr-6 ${dark ? "border-fog/15" : "border-line-2"}`}>
-          <dt className={`flex flex-wrap items-center gap-2 text-sm ${dark ? "text-fog-2" : "text-ink-3"}`}>
+        <div key={item.label} className={`flex min-w-0 flex-col border-r border-b p-4 lg:p-5 ${dark ? "border-fog/30" : "border-rule bg-paper-2"}`}>
+          <dt className={`flex flex-wrap items-center gap-2 text-[16px] font-medium ${dark ? "text-fog" : "text-ink"}`}>
             {item.label}
             {item.tag ? <Tag tone={item.tag} /> : null}
           </dt>
-          <dd className="mt-2 font-display text-[clamp(2rem,3.4vw,2.8rem)] leading-none font-bold tracking-tight tabular-nums">{item.value}</dd>
-          {item.note ? <dd className={`mt-2 text-[13.5px] leading-snug ${dark ? "text-fog-2" : "text-ink-3"}`}>{item.note}</dd> : null}
+          <dd className="mt-6 font-display text-[clamp(2.2rem,1.9rem+1.2vw,3.2rem)] leading-none tracking-[-0.02em] [overflow-wrap:anywhere] tabular-nums">{item.value}</dd>
+          {item.note ? <dd className={`mt-auto pt-6 text-[12.5px] leading-snug ${dark ? "text-fog-2" : "text-ink"}`}>{item.note}</dd> : null}
         </div>
       ))}
     </dl>
@@ -353,28 +487,34 @@ export function Figures({
 
 /** Long-form page body (legal, policies, articles). */
 export function LongForm({
+  eyebrow,
   title,
   lead,
   updated,
+  crumbs,
   children,
 }: {
+  eyebrow?: React.ReactNode;
   title: string;
   lead?: React.ReactNode;
   updated?: string;
+  crumbs?: Crumb[];
   children: React.ReactNode;
 }) {
   return (
     <>
-      <section className="meridians border-b border-line bg-paper">
-        <Container className="py-14 sm:py-20">
-          <h1 className="max-w-4xl font-display text-[clamp(2.3rem,5vw,4rem)] leading-[1] font-bold tracking-[-0.03em]">{title}</h1>
-          {lead ? <p className="mt-5 max-w-2xl text-[18px] leading-relaxed text-ink-2">{lead}</p> : null}
-          {updated ? <p className="mt-5 font-mono text-[12px] text-ink-3">Last updated {updated}</p> : null}
+      <section className="bg-paper">
+        {crumbs ? <JsonLd data={breadcrumbLd(crumbs)} /> : null}
+        <Container className="pt-16 pb-10 lg:pt-24">
+          {eyebrow ? <Eyebrow>{eyebrow}</Eyebrow> : null}
+          <h1 className="t-h1 max-w-4xl text-balance">{title}</h1>
+          {lead ? <div className="t-lead mt-8 max-w-[680px] text-ink-2">{lead}</div> : null}
+          {updated ? <p className="mt-6 text-[13px] text-ink-3">Last updated {updated}</p> : null}
         </Container>
       </section>
-      <section className="bg-card">
-        <Container className="py-12 sm:py-16">
-          <div className="prose-gleo max-w-3xl">{children}</div>
+      <section className="bg-paper">
+        <Container className="pb-20 lg:pb-24">
+          <div className="prose-gleo max-w-[792px] border-t border-line pt-10">{children}</div>
         </Container>
       </section>
     </>

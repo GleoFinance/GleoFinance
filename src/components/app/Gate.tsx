@@ -1,5 +1,6 @@
 "use client";
 
+import { ArrowUpRight } from "lucide-react";
 import { CHAIN } from "@/config/brand";
 import { useWalletModal } from "@/components/wallet/WalletButton";
 import { useWallet } from "@/components/wallet/WalletProvider";
@@ -13,25 +14,29 @@ export function Gate({ children, needsChain = true, what }: { children: React.Re
   const { open } = useWalletModal();
   if (!address) {
     return (
-      <div className="rounded-2xl border border-dashed border-line-2 bg-card p-6">
-        <p className="font-display text-xl font-semibold">Connect a wallet to {what}</p>
-        <p className="mt-2 max-w-lg text-[15px] text-ink-2">
-          Any EVM wallet that can add a network works. Connecting shares your address only; {CHAIN.name} is added to the wallet if it is missing.
+      <div className="border border-line bg-paper p-6 sm:p-8">
+        <p className="font-display text-[24px] leading-[1.2] tracking-[-0.02em]">Connect a wallet to {what}</p>
+        <p className="mt-3 max-w-lg text-[16px] leading-relaxed text-ink-2">
+          Any EVM wallet that can add a custom network will do. Connecting shares your address and nothing else, and {CHAIN.name} is
+          added to the wallet if it is not there yet.
         </p>
-        <button type="button" onClick={open} className="btn btn-ink mt-5 h-11 px-5" data-testid="gate-connect">
+        <button type="button" onClick={open} className="pill pill-ink mt-6" data-testid="gate-connect">
           Connect wallet
+          <span className="pill-disc">
+            <ArrowUpRight className="size-4" />
+          </span>
         </button>
       </div>
     );
   }
   if (needsChain && chainId !== null && !onRobinhoodChain) {
     return (
-      <div className="rounded-2xl border border-down/40 bg-down-soft p-6">
-        <p className="font-display text-xl font-semibold">Wrong network</p>
-        <p className="mt-2 text-[15px] text-ink-2">
+      <div className="border border-down bg-down-soft p-6 sm:p-8">
+        <p className="font-display text-[24px] leading-[1.2] tracking-[-0.02em]">Wrong network</p>
+        <p className="mt-3 text-[16px] leading-relaxed text-ink-2">
           Your wallet is on chain {chainId}. Switch it to {CHAIN.name} (chain id {CHAIN.id}) to {what}.
         </p>
-        <button type="button" onClick={switchNetwork} disabled={switching} className="btn btn-accent mt-5 h-11 px-5">
+        <button type="button" onClick={switchNetwork} disabled={switching} className="btn btn-ink mt-6 h-11 px-6">
           {switching ? "Confirm in wallet…" : `Switch to ${CHAIN.name}`}
         </button>
       </div>

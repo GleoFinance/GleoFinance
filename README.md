@@ -81,13 +81,15 @@ Other scripts: `npm run typecheck`, `npm run lint`, `npm run assets` (re-verify 
 
 ```
 src/app/               routes (marketing pages, app tools, API routes)
-src/components/        header, footer, page blocks (ui.tsx), drawings (art.tsx)
+src/components/        header, footer, page blocks (ui.tsx), drawings (art.tsx), spot icons (glyph.tsx), JSON-LD
 src/components/app/    Send, network panel, asset table, practice tools
 src/components/wallet/ wallet dialog, EIP-6963 discovery, WalletConnect
 src/config/            brand.ts (single source for name and CA), nav, wallets, verified assets
-src/lib/               RPC clients, feeds, practice receipts, signature recovery
+src/lib/               RPC clients, feeds, practice receipts, signature recovery, seo.ts (metadata helper)
 scripts/               resolve-assets.mjs, make-brand.mjs
 ```
+
+Every page builds its title, description, canonical URL and social card through `pageMeta()` in `src/lib/seo.ts`; `src/app/sitemap.ts` and `src/app/robots.ts` list the indexable routes.
 
 ## Contracts and token
 

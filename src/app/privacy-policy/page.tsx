@@ -1,18 +1,26 @@
-import type { Metadata } from "next";
 import { BRAND, CHAIN } from "@/config/brand";
 import { LongForm } from "@/components/ui";
+import { pageMeta } from "@/lib/seo";
 
-export const metadata: Metadata = {
-  title: "Privacy policy",
-  description: "What the Gleo website collects, what stays in your browser, and which third parties it talks to.",
-};
+export const metadata = pageMeta({
+  path: "/privacy-policy",
+  title: "Privacy Policy for the Website and Wallet Tools",
+  description:
+    "What the Gleo website collects, what stays in your browser, how wallet connections and practice receipts work, and which third parties the site contacts.",
+  keywords: ["privacy policy", "wallet privacy", "no tracking", "local storage", "Gleo website data"],
+});
 
 export default function PrivacyPolicyPage() {
   return (
     <LongForm
-      title="Privacy policy"
-      updated="October 5, 2026"
-      lead={`This policy covers the website at ${BRAND.domain}. It is short because the site collects very little.`}
+      eyebrow="Legal"
+      title="Gleo privacy policy"
+      updated="October 6, 2026"
+      lead={
+        <p>
+          This Gleo privacy policy covers the website at {BRAND.domain} and its wallet tools. It is short because the site collects very little.
+        </p>
+      }
     >
       <h2>Overview</h2>
       <p>

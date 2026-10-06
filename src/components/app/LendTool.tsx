@@ -146,13 +146,13 @@ function Market() {
 
       <div className="grid grid-cols-1 gap-8 xl:grid-cols-[minmax(0,420px)_minmax(0,1fr)]">
         <form
-          className="min-w-0 space-y-4 rounded-2xl border border-line-2 bg-card p-5"
+          className="min-w-0 space-y-4 border border-line bg-paper p-5"
           onSubmit={(e) => {
             e.preventDefault();
             submit();
           }}
         >
-          <div className="grid grid-cols-4 gap-1 rounded-full bg-paper p-1">
+          <div className="grid grid-cols-4 gap-1 rounded-full bg-paper-2 p-1">
             {ACTIONS.map((a) => (
               <button key={a} type="button" aria-pressed={action === a} onClick={() => setAction(a)} className={`cursor-pointer rounded-full py-1.5 text-[13px] font-semibold ${action === a ? "bg-ink text-fog" : "text-ink-2"}`}>
                 {a}
@@ -174,15 +174,15 @@ function Market() {
           <Feedback error={act.error} done={act.done} />
         </form>
         <div className="min-w-0">
-          <dl className="grid grid-cols-1 gap-px overflow-hidden rounded-2xl border border-line-2 bg-line-2 sm:grid-cols-3">
+          <dl className="grid grid-cols-1 gap-px overflow-hidden border border-line-2 bg-line-2 sm:grid-cols-3">
             {[
               ["Borrow limit", `$${fmt(h.limit, 2)}`],
               ["Debt", `$${fmt(h.debt, 2)}`],
               ["Health factor", Number.isFinite(h.factor) ? fmt(h.factor, 2) : "no debt"],
             ].map(([k, v]) => (
-              <div key={k} className="bg-card p-4">
+              <div key={k} className="bg-paper p-4">
                 <dt className="text-sm text-ink-3">{k}</dt>
-                <dd className={`mt-1 font-display text-2xl font-bold ${k === "Health factor" && h.factor < 1.2 ? "text-down" : ""}`}>{v}</dd>
+                <dd className={`mt-1 font-display text-[28px] leading-[1.2] tracking-[-0.02em] ${k === "Health factor" && h.factor < 1.2 ? "text-down" : ""}`}>{v}</dd>
               </div>
             ))}
           </dl>
@@ -193,7 +193,7 @@ function Market() {
         </div>
       </div>
       <div>
-        <h2 className="font-display text-2xl font-semibold">Signed receipts</h2>
+        <h2 className="font-display text-[28px] leading-[1.2] tracking-[-0.02em]">Signed receipts</h2>
         <div className="mt-4">
           <ReceiptLog receipts={receipts} onClear={clear} describe={(r) => `${r.details.Action} ${r.details.Amount} ${r.details.Market} · health ${r.details["Health after"]}`} />
         </div>

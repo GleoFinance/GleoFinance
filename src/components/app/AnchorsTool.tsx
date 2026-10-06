@@ -39,7 +39,7 @@ export function AnchorsTool() {
       </PracticeNote>
       <div>
         <div className="flex flex-wrap items-baseline justify-between gap-3">
-          <h2 className="font-display text-2xl font-semibold">Anchor directory</h2>
+          <h2 className="font-display text-[28px] leading-[1.2] tracking-[-0.02em]">Anchor directory</h2>
           <p className="text-[13px] text-ink-3">
             {fx ? (
               <>
@@ -141,7 +141,7 @@ function Desk({ fx }: { fx: Fx | null }) {
   return (
     <div className="grid grid-cols-1 gap-8 xl:grid-cols-[minmax(0,420px)_minmax(0,1fr)]">
       <form
-        className="min-w-0 space-y-4 rounded-2xl border border-line-2 bg-card p-5"
+        className="min-w-0 space-y-4 border border-line bg-paper p-5"
         onSubmit={(e) => {
           e.preventDefault();
           submit();
@@ -149,7 +149,7 @@ function Desk({ fx }: { fx: Fx | null }) {
       >
         <div className="grid grid-cols-2 gap-2">
           {(["Deposit", "Withdraw"] as const).map((d) => (
-            <button key={d} type="button" aria-pressed={dir === d} onClick={() => setDir(d)} className={`cursor-pointer rounded-xl border px-3 py-2.5 text-left ${dir === d ? "border-ink bg-paper" : "border-line-2"}`}>
+            <button key={d} type="button" aria-pressed={dir === d} onClick={() => setDir(d)} className={`cursor-pointer border px-3 py-2.5 text-left ${dir === d ? "border-ink bg-sea-soft" : "border-line-2 hover:border-ink"}`}>
               <span className="block font-semibold">{d}</span>
               <span className="block text-[12.5px] text-ink-3">{d === "Deposit" ? "Cash in, USDG out" : "USDG in, cash out"}</span>
             </button>
@@ -173,7 +173,7 @@ function Desk({ fx }: { fx: Fx | null }) {
           </label>
           <input id="an-amount" inputMode="decimal" className="field mt-1.5 font-mono text-lg" value={amount} onChange={(e) => setAmount(cleanDecimal(e.target.value))} placeholder="100" />
         </div>
-        <dl className="divide-y divide-dashed divide-line-2 rounded-xl bg-paper px-4 text-[14px]">
+        <dl className="divide-y divide-dashed divide-line-2 bg-paper-2 px-4 text-[14px]">
           <div className="flex justify-between gap-3 py-2.5">
             <dt className="text-ink-2">Example fee</dt>
             <dd className="font-mono">{quote ? `${fmt(quote.fee, 2)} ${quote.feeUnit}` : "—"}</dd>
@@ -193,7 +193,7 @@ function Desk({ fx }: { fx: Fx | null }) {
         <Feedback error={act.error} done={act.done} />
       </form>
       <div className="min-w-0">
-        <h3 className="font-display text-xl font-semibold">Your practice transfers</h3>
+        <h3 className="font-display text-[24px] leading-[1.2] tracking-[-0.02em]">Your practice transfers</h3>
         <div className="mt-3">
           <ReceiptLog receipts={receipts} onClear={clear} describe={(r) => `${r.details.Action} ${r.details["You send"]} → ${r.details["You receive"]} · ${r.details.Reference}`} />
         </div>

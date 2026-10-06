@@ -232,7 +232,7 @@ function SendForm() {
 
   return (
     <div className="grid grid-cols-1 gap-8 xl:grid-cols-[minmax(0,1fr)_minmax(0,320px)]">
-      <div className="min-w-0 rounded-2xl border border-line-2 bg-card p-5 sm:p-6">
+      <div className="min-w-0 border border-line bg-paper p-5 sm:p-6">
         {stage === "edit" ? (
           <form
             onSubmit={(e) => {
@@ -253,7 +253,7 @@ function SendForm() {
                       setAmount("");
                     }}
                     aria-pressed={asset === a}
-                    className={`cursor-pointer rounded-xl border px-4 py-3 text-left ${asset === a ? "border-ink bg-paper" : "border-line-2 hover:border-ink"}`}
+                    className={`cursor-pointer border px-4 py-3 text-left ${asset === a ? "border-ink bg-sea-soft" : "border-line-2 hover:border-ink"}`}
                   >
                     <span className="block font-semibold">{a === "USDG" ? "USDG" : "ETH"}</span>
                     <span className="block text-[12.5px] text-ink-3">
@@ -313,7 +313,7 @@ function SendForm() {
                 <span className="absolute top-1/2 right-4 -translate-y-1/2 font-mono text-sm text-ink-3">{asset}</span>
               </div>
             </div>
-            <div className="flex flex-wrap items-baseline justify-between gap-2 rounded-xl bg-paper px-4 py-3 text-sm">
+            <div className="flex flex-wrap items-baseline justify-between gap-2 bg-paper-2 px-4 py-3 text-sm">
               <span className="text-ink-2">Estimated network fee</span>
               <span className="font-mono">
                 {!tx ? "—" : gas ? `${formatUnits(feeWei!, 18, 8)} ETH · ${fmtUsdSmall(feeUsd)}` : gasError ? "unavailable" : "estimating…"}
@@ -330,7 +330,7 @@ function SendForm() {
           </form>
         ) : (
           <div>
-            <p className="font-display text-2xl font-semibold">
+            <p className="font-display text-[28px] leading-[1.2] tracking-[-0.02em]">
               {stage === "review" ? "Check the details" : stage === "wallet" ? "Confirm in your wallet" : stage === "pending" ? "Waiting for the block" : stage === "done" ? "Payment settled" : "Payment did not settle"}
             </p>
             <dl className="mt-5 divide-y divide-dashed divide-line-2 border-y border-dashed border-line-2">
@@ -368,7 +368,7 @@ function SendForm() {
               ) : (
                 <>
                   {stage === "done" ? (
-                    <span className="inline-flex items-center gap-2 text-sm font-semibold text-sea-deep">
+                    <span className="inline-flex items-center gap-2 text-sm font-semibold text-up">
                       <CircleCheck className="size-4" /> Confirmed on {CHAIN.name}
                     </span>
                   ) : null}
@@ -382,7 +382,7 @@ function SendForm() {
         )}
       </div>
       <aside className="min-w-0">
-        <p className="label">Your recent payments</p>
+        <h2 className="label">Your recent payments</h2>
         {history.length ? (
           <ul className="mt-3 divide-y divide-line border-y border-line">
             {history.map((s) => (
@@ -391,12 +391,12 @@ function SendForm() {
                   <span className="font-semibold">
                     {s.amount} {s.asset}
                   </span>
-                  <span className={`font-mono text-[11px] uppercase ${s.status === "confirmed" ? "text-sea-deep" : s.status === "failed" ? "text-down" : "text-ink-3"}`}>{s.status}</span>
+                  <span className={`text-[11px] font-semibold uppercase ${s.status === "confirmed" ? "text-up" : s.status === "failed" ? "text-down" : "text-ink-3"}`}>{s.status}</span>
                 </div>
                 <div className="mt-0.5 flex items-baseline justify-between gap-3 text-ink-3">
                   <span className="font-mono">to {shortAddress(s.to, 6, 4)}</span>
-                  <a href={explorerTx(s.hash)} target="_blank" rel="noreferrer" className="underline">
-                    tx
+                  <a href={explorerTx(s.hash)} target="_blank" rel="noreferrer" className="underline underline-offset-4">
+                    View transaction
                   </a>
                 </div>
               </li>

@@ -17,8 +17,8 @@ export function LiveFigures({ dark = false, withLink = true }: { dark?: boolean;
           {error && !snap ? "Chain unreachable right now. Retrying." : `Read from Robinhood Chain ${ago}`}
         </span>
         {withLink ? (
-          <Link href="/network" className={`ml-auto inline-flex items-center gap-1 font-semibold ${dark ? "text-fog" : "text-sea-deep"}`}>
-            Full network panel <ArrowRight className="size-3.5" />
+          <Link href="/network" className={`ml-auto inline-flex items-center gap-1 font-medium underline-offset-4 hover:underline ${dark ? "text-fog" : "text-ink"}`}>
+            Open the live network panel <ArrowRight className="size-3.5" />
           </Link>
         ) : null}
       </div>

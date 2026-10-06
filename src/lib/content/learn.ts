@@ -196,35 +196,88 @@ export const ARTICLES: Article[] = [
     tryIt: { href: "/network", label: "See USDG supply read from the chain" },
   },
   {
-    slug: "federated-byzantine-agreement",
-    title: "Federated Byzantine agreement, explained",
+    slug: "gas-and-fees",
+    title: "Gas and fees, explained",
     topic: "Network",
-    minutes: 6,
-    summary: "A way for independent organisations to agree on one ledger without mining or staking.",
+    minutes: 5,
+    summary: "What a network fee pays for on an EVM chain, how it is calculated, and why a transfer on Robinhood Chain costs a fraction of a cent.",
     sections: [
       {
-        heading: "The problem",
+        heading: "What the fee pays for",
         paragraphs: [
-          "A network of computers has to agree on the order of transactions even when some members are offline or dishonest. Computer scientists call dishonest members Byzantine, after an old puzzle about generals passing messages.",
+          "Every transaction asks the network to do some work: check a signature, update a balance, run a contract. That work is measured in units called gas. A plain ETH transfer uses a fixed, small amount; a token transfer uses more because the token contract has to update two balances and emit a record.",
+          "The fee you pay is the gas used multiplied by the gas price at that moment. On Robinhood Chain both are paid in ETH, whatever token you are actually moving.",
         ],
       },
       {
-        heading: "Agreement through trusted sets",
+        heading: "Why the price moves",
         paragraphs: [
-          "In federated Byzantine agreement each participant names the other participants it trusts, called its quorum slice. A statement is accepted once enough overlapping slices have agreed to it. Nobody needs permission from a central authority to join; they only need others to include them.",
-          "Because agreement comes from voting rounds rather than from burning energy or locking up stake, the approach is fast and cheap to run. Its safety depends on the slices overlapping: if groups of participants trust no one in common, the network could split.",
+          "The gas price rises when many people want space in the next blocks and falls when the chain is quiet. Wallets suggest a price that should get your transaction included soon; paying more rarely helps on a chain whose blocks arrive in a fraction of a second.",
+          "Because the fee is tied to computation and not to the amount, sending ten dollars and sending ten thousand cost the same.",
         ],
       },
       {
-        heading: "Where Gleo fits",
+        heading: "Reading the fee before you sign",
         paragraphs: [
-          "Gleo does not run its own consensus. It inherits finality from Robinhood Chain, whose blocks arrive in a fraction of a second. The federated model is the design reference for how Gleo plans to coordinate anchors and asset issuers: each one names the others it accepts.",
+          "Gleo's Send tool estimates the gas for your exact transfer, multiplies it by the current gas price and converts the result to dollars using a live ETH price. You see that figure before your wallet opens, and the network panel shows the same calculation for a standard USDG transfer every few seconds.",
         ],
       },
     ],
-    tryIt: { href: "/learn/intro", label: "Back to the Gleo overview" },
+    tryIt: { href: "/network", label: "See the live cost of a USDG transfer" },
   },
 ];
 
 export const findArticle = (slug: string) => ARTICLES.find((a) => a.slug === slug) ?? null;
 export const LEARN_TOPICS: LearnTopic[] = ["Foundations", "Payments", "DeFi", "Network"];
+
+/** Search titles and descriptions per guide (title gets " — Gleo" appended). */
+export const ARTICLE_SEO: Record<string, { title: string; description: string; keyword: string }> = {
+  "blockchain-basics": {
+    keyword: "blockchain basics",
+    title: "Blockchain Basics: How a Shared Ledger Works",
+    description:
+      "Blockchain basics in plain words: blocks, keys and addresses, and why a ledger nobody owns changes how money settles. A five-minute guide with a live example.",
+  },
+  "cross-border-payments-on-chain": {
+    keyword: "cross-border payments on a blockchain",
+    title: "Cross-Border Payments on a Blockchain, Step by Step",
+    description:
+      "Why bank transfers abroad take days, and how cross-border payments on a blockchain settle in one ledger update. Read the guide, then send USDG yourself.",
+  },
+  "anchors-basics": {
+    keyword: "crypto on-ramps and off-ramps",
+    title: "Crypto On-Ramps and Off-Ramps: What an Anchor Does",
+    description:
+      "Anchors turn local cash into tokens and back. Learn how crypto on-ramps and off-ramps work, what a shared standard changes, and how to judge an anchor.",
+  },
+  "lending-and-borrowing-markets": {
+    keyword: "DeFi lending and borrowing",
+    title: "How DeFi Lending and Borrowing Markets Work",
+    description:
+      "DeFi lending and borrowing explained: pooled deposits, rates that follow demand, collateral health and liquidation. Then open a free practice loan on Gleo.",
+  },
+  oracles: {
+    keyword: "blockchain oracles",
+    title: "Blockchain Oracles: How Smart Contracts Get Prices",
+    description:
+      "Smart contracts cannot see outside the chain. Learn how blockchain oracles publish prices, why freshness checks matter, and when to use on-chain averages.",
+  },
+  "smart-contract-basics": {
+    keyword: "smart contract basics",
+    title: "Smart Contract Basics: Programs on the Ledger",
+    description:
+      "Smart contract basics: code stored at an address, run identically by every node, readable before you trust it. Learn what contracts can and cannot do.",
+  },
+  stablecoins: {
+    keyword: "what is a stablecoin",
+    title: "What Is a Stablecoin? Reserves and Redemption",
+    description:
+      "What is a stablecoin, what backs it and which questions to ask before you rely on one. A short guide using USDG on Robinhood Chain as the worked example.",
+  },
+  "gas-and-fees": {
+    keyword: "gas fees explained",
+    title: "Gas Fees Explained: What a Transfer Really Costs",
+    description:
+      "Gas fees explained for EVM chains: what the fee pays for, why the price moves, and how to see the dollar cost of a Robinhood Chain transfer before you sign.",
+  },
+};

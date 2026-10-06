@@ -1,54 +1,72 @@
-import type { Metadata } from "next";
 import { BRAND } from "@/config/brand";
-import { ButtonLink, Container, LinkTiles, Section, SectionHead } from "@/components/ui";
+import { pageMeta } from "@/lib/seo";
+import { ButtonLink, CtaBand, Eyebrow, LinkTiles, PageHero, Section, SectionHead } from "@/components/ui";
 
-export const metadata: Metadata = {
-  title: "Press",
-  description: "Gleo announcements and media kit. No press releases have been issued yet.",
-};
+export const metadata = pageMeta({
+  path: "/press",
+  title: "Press Releases, Announcements and Media Kit",
+  description:
+    "Official Gleo press releases and announcements, plus the media kit with logo files, colours and type. No releases issued yet; journalists can reach us on X.",
+  keywords: ["press releases", "media kit", "Gleo announcements", "crypto payments news", "Robinhood Chain news"],
+});
 
 export default function PressPage() {
   return (
     <>
-      <section className="meridians border-b border-line bg-paper">
-        <Container className="grid grid-cols-1 gap-8 py-14 sm:py-20 lg:grid-cols-[minmax(0,1.2fr)_minmax(0,1fr)] lg:items-end">
-          <h1 className="font-display text-[clamp(2.4rem,5.4vw,4.6rem)] leading-[0.98] font-bold tracking-[-0.03em]">Press releases</h1>
-          <p className="min-w-0 text-[18px] leading-relaxed text-ink-2">
-            Official statements from Gleo. If it is not listed here or posted by {BRAND.xHandle}, it did not come from us.
-          </p>
-        </Container>
-      </section>
-
-      <Section tone="card">
-        <div className="grid grid-cols-1 gap-8 lg:grid-cols-[260px_minmax(0,1fr)]">
-          <p className="font-mono text-[12px] tracking-[0.08em] text-ink-3 uppercase">Releases</p>
-          <div className="min-w-0 border-t border-line-2 pt-6">
-            <p className="font-display text-2xl font-semibold">No press releases yet.</p>
-            <p className="mt-3 max-w-2xl text-[16px] leading-relaxed text-ink-2">
-              The first one goes out when the $GLEO contract and the first Gleo Contracts are live. Until then, product news is in the journal and
-              short announcements are on X.
+      <PageHero
+        eyebrow="Press"
+        title="Gleo press releases and announcements"
+        lead={
+          <>
+            <p>
+              Official Gleo press releases and announcements are listed on this page. If a statement is not here or posted by {BRAND.xHandle}, it
+              did not come from us.
             </p>
+            <p className="mt-4">Logo files, colours and type are on the brand resources page.</p>
+          </>
+        }
+        actions={<ButtonLink href="/brand">Brand resources</ButtonLink>}
+      />
+
+      <Section tone="gray">
+        <div className="grid grid-cols-1 gap-6 lg:grid-cols-2 lg:gap-16">
+          <div className="min-w-0">
+            <Eyebrow>Releases</Eyebrow>
+            <h2 className="t-h2">No press releases yet</h2>
           </div>
+          <p className="t-lead min-w-0 text-ink-2 lg:pt-9">
+            The first release goes out when the $GLEO contract and the first Gleo Contracts are live. Until then, product news is in the journal and
+            short announcements are on X.
+          </p>
         </div>
       </Section>
 
       <Section>
-        <SectionHead title="For journalists and writers" lead="Logo files, colours and the facts we stand behind, in one place." />
-        <div className="mt-10">
+        <SectionHead eyebrow="Media" title="Resources for journalists and writers" lead="Logo files, colours and the facts we stand behind, in one place." />
+        <div className="mt-12">
           <LinkTiles
             items={[
-              { href: "/brand", title: "Media kit", body: "Logo files, the social card, palette and type." },
-              { href: "/blog", title: "Journal", body: "Longer posts from the team about product and network decisions." },
-              { href: BRAND.x, title: "Announcements on X", body: `${BRAND.xHandle}: releases, addresses and corrections land here first.` },
+              { href: "/brand", title: "Media kit", body: "Logo files, the social card, palette and type.", label: "Download brand files" },
+              { href: "/blog", title: "Journal", body: "Longer posts from the team about product and network decisions.", label: "Read the Gleo journal" },
+              { href: BRAND.x, title: "Announcements on X", body: `${BRAND.xHandle}: releases, addresses and corrections land here first.`, label: `Follow ${BRAND.xHandle}` },
             ]}
           />
         </div>
-        <div className="mt-10">
-          <ButtonLink href={BRAND.x} variant="ink">
-            Press questions by DM
-          </ButtonLink>
-        </div>
       </Section>
+
+      <CtaBand
+        eyebrow="Press contact"
+        title="Questions from the press"
+        body="Send a direct message on X with your outlet and deadline, and we will reply as quickly as we can."
+        actions={
+          <>
+            <ButtonLink href={BRAND.x}>Message {BRAND.xHandle}</ButtonLink>
+            <ButtonLink href="/about" variant="line">
+              About Gleo
+            </ButtonLink>
+          </>
+        }
+      />
     </>
   );
 }

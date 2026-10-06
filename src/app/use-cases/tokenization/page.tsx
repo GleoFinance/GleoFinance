@@ -1,190 +1,246 @@
-import type { Metadata } from "next";
 import Link from "next/link";
+import { Gem, Landmark } from "lucide-react";
 import { BRAND } from "@/config/brand";
-import { STOCK_TOKENS } from "@/config/assets.generated";
-import { ButtonLink, CtaBand, Faq, Figures, LinkTiles, PageHero, Rows, Section, SectionHead, Split, Tag } from "@/components/ui";
+import { STOCK_TOKENS, USDG } from "@/config/assets.generated";
+import { pageMeta, faqLd } from "@/lib/seo";
+import { JsonLd } from "@/components/JsonLd";
+import { Glyph } from "@/components/glyph";
+import { JumpTo } from "@/components/content/JumpTo";
+import { ScenarioCover } from "@/components/content/ScenarioCover";
+import { ButtonLink, Faq, Figures, LinkTiles, PageHero, Rows, Section, SectionHead, Split, Tag } from "@/components/ui";
 
-export const metadata: Metadata = {
-  title: "Asset tokenization",
-  description: "Issue gold, equities, bonds, securities and property as tokens on Gleo, with freeze, clawback and holder approval built into the asset.",
-};
+export const metadata = pageMeta({
+  path: "/use-cases/tokenization",
+  title: "Real-World Asset Tokenization with Built-In Controls",
+  description:
+    "Real-world asset tokenization on Robinhood Chain: issue gold, fund shares or bonds as tokens with holder approval, freeze and clawback. Rehearse it free.",
+  keywords: ["real-world asset tokenization", "tokenized stocks", "asset issuance", "RWA tokens", "clawback and freeze"],
+});
+
+const FAQ = [
+  {
+    q: "Can I issue a tokenized asset through Gleo today?",
+    a: "Not on mainnet yet. The Gleo issuance contracts are designed but not deployed or audited. The Tokenize console lets you rehearse every step in practice mode, signed with your own wallet and free.",
+  },
+  {
+    q: "Which issuer controls does a Gleo asset support?",
+    a: "Holder approval (only approved addresses may hold), freeze (pause a single holder) and clawback (return tokens to the issuer, for court orders or lost keys). Each one is chosen when the asset is created and is visible to every holder.",
+  },
+  {
+    q: "Does Gleo verify my investors?",
+    a: "No. Identity and suitability checks stay with the issuer or a provider it hires. Gleo enforces the approval list the issuer keeps.",
+  },
+  {
+    q: "How do holders know the underlying asset exists?",
+    a: "On-chain supply shows exactly what was issued. Evidence of the asset itself, such as a vault or custodian report, has to come from the issuer and its auditor.",
+  },
+];
+
+const JUMP = [
+  { id: "asset-types", label: "Two kinds of asset" },
+  { id: "on-chain-now", label: "Already on Robinhood Chain" },
+  { id: "why-gleo", label: "Why issue on Gleo" },
+  { id: "targets", label: "Design targets" },
+  { id: "console", label: "Issuer console" },
+  { id: "faq", label: "FAQ" },
+];
 
 export default function Tokenization() {
   return (
     <>
       <PageHero
-        title="Real-world assets, issued as tokens"
-        lead="Gleo lets an issuer put gold, fund shares, bonds, invoices or property on Robinhood Chain as tokens that carry their own rules: who may hold them, and what the issuer may do when it has to."
+        eyebrow="Asset tokenization"
+        title="Real-world asset tokenization, with the rules inside the token"
+        lead="Gleo is building real-world asset tokenization for Robinhood Chain: an issuer puts gold, fund shares, bonds, invoices or property on-chain as tokens that carry their own rules about who may hold them and what the issuer may do when it must. The issuer console runs in practice mode while the contracts are audited."
         art="token"
         meta={<Tag tone="practice">Issuer console in practice mode</Tag>}
+        crumbs={[
+          { name: "Use cases", path: "/use-cases" },
+          { name: "Asset tokenization", path: "/use-cases/tokenization" },
+        ]}
         actions={
           <>
-            <ButtonLink href="/tokenize" variant="accent">
-              Try the issuer console
-            </ButtonLink>
+            <ButtonLink href="/tokenize">Try the issuer console</ButtonLink>
             <ButtonLink href="/assets" variant="line">
-              Browse assets on-chain
+              Browse tokenized assets
             </ButtonLink>
           </>
         }
       />
 
-      <Section>
-        <SectionHead title="Two kinds of asset, one ledger" lead="Most tokenized value falls into one of two groups. Both use the same issuing tools and the same controls." />
-        <div className="mt-10 grid grid-cols-1 gap-px overflow-hidden rounded-2xl border border-line-2 bg-line-2 md:grid-cols-2">
-          <div className="bg-card p-7">
-            <h3 className="font-display text-2xl font-semibold">Assets you pay with</h3>
-            <p className="mt-3 text-[15.5px] leading-relaxed text-ink-2">
-              Dollar and local-currency tokens, deposit tokens from banks, and gold or silver grams people save in. They need a stable
-              reserve, fast redemption and a clear issuer.
-            </p>
-            <ul className="mt-5 flex flex-wrap gap-2">
-              {["Stable dollars", "Bank deposits", "Gold grams", "Local currencies"].map((t) => (
-                <li key={t} className="rounded-full bg-paper px-3 py-1 text-sm">
-                  {t}
-                </li>
-              ))}
-            </ul>
-          </div>
-          <div className="bg-card p-7">
-            <h3 className="font-display text-2xl font-semibold">Assets you invest in</h3>
-            <p className="mt-3 text-[15.5px] leading-relaxed text-ink-2">
-              Equities, fund shares, government and corporate bonds, private credit and property interests. They need holder rules,
-              corporate actions and an audit trail regulators can follow.
-            </p>
-            <ul className="mt-5 flex flex-wrap gap-2">
-              {["Equities", "Fund shares", "Bonds", "Private credit", "Property"].map((t) => (
-                <li key={t} className="rounded-full bg-paper px-3 py-1 text-sm">
-                  {t}
-                </li>
-              ))}
-            </ul>
-          </div>
-        </div>
-      </Section>
-
-      <Section tone="night">
+      <Section tone="night" tight>
         <SectionHead
           dark
-          title="Already on the chain"
-          lead="Robinhood Chain carries tokenized shares and a regulated dollar today. Each one below was checked on-chain, not matched by ticker; copycats are filtered out."
+          split
+          eyebrow="How it works"
+          title="One register that issuer, holder and auditor all read"
+          lead="Share registers, transfer agents and the reconciliation between them usually live in separate systems. A token puts the register on a public ledger: the issuer mints and burns, holders transfer within the rules, and an auditor reads the same record everyone else does."
+        />
+      </Section>
+
+      <Section tone="gray" id="asset-types">
+        <SectionHead eyebrow="Asset types" title="Two kinds of asset, one ledger" lead="Most tokenized value falls into one of two groups. Both use the same issuing tools and the same controls." />
+        <ul className="mt-10 grid grid-cols-1 gap-6 md:grid-cols-2">
+          {[
+            {
+              icon: Gem,
+              title: "Assets people pay and save with",
+              body: "Dollar and local-currency tokens, bank deposit tokens and gold or silver measured in grams. They need a stable reserve, quick redemption and a named issuer.",
+              chips: ["Stable dollars", "Deposit tokens", "Gold grams", "Local currencies"],
+            },
+            {
+              icon: Landmark,
+              title: "Assets people invest in",
+              body: "Equities, fund shares, government and corporate bonds, private credit and property interests. They need holder rules, corporate actions and a trail regulators can follow.",
+              chips: ["Equities", "Fund shares", "Bonds", "Private credit", "Property"],
+            },
+          ].map((g) => (
+            <li key={g.title} className="min-w-0 border border-line bg-paper p-8 lg:p-10">
+              <Glyph icon={g.icon} />
+              <h3 className="t-h3 mt-8">{g.title}</h3>
+              <p className="t-lead mt-3 text-ink-2">{g.body}</p>
+              <ul className="mt-6 flex flex-wrap gap-2">
+                {g.chips.map((c) => (
+                  <li key={c} className="border border-line px-2.5 py-1 text-[13px]">
+                    {c}
+                  </li>
+                ))}
+              </ul>
+            </li>
+          ))}
+        </ul>
+      </Section>
+
+      <Section id="on-chain-now">
+        <SectionHead
+          eyebrow="Live on Robinhood Chain"
+          title="Tokenized stocks and a dollar token you can check today"
+          lead="Robinhood Chain already carries tokenized shares and USDG. Each token below was verified against the chain's stock-token beacon, not matched by ticker, so look-alike contracts are left out. They are issued by others; Gleo lists them and lets you use them."
         />
         <ul className="mt-10 flex flex-wrap gap-2">
-          {["USDG", ...STOCK_TOKENS.map((t) => t.symbol)].map((s) => (
+          {[USDG.symbol, ...STOCK_TOKENS.map((t) => t.symbol)].map((s) => (
             <li key={s}>
-              <Link href="/assets" className="block rounded-full border border-fog/25 px-3.5 py-1.5 font-mono text-[13px] hover:border-fog">
+              <Link href="/assets" className="block border border-line px-4 py-2 text-[14px] font-semibold transition-colors hover:border-ink">
                 {s}
               </Link>
             </li>
           ))}
         </ul>
-        <p className="mt-6 text-sm text-fog-2">These tokens are issued by others; Gleo lists them and lets you use them, it does not issue them.</p>
+        <p className="mt-6 text-[14px] text-ink-3">
+          Live supply and prices for every token are in the{" "}
+          <Link href="/assets" className="text-ink underline underline-offset-4">
+            Gleo asset explorer
+          </Link>
+          .
+        </p>
       </Section>
 
-      <Section>
+      <Section tone="gray" id="why-gleo">
+        <SectionHead eyebrow="Why issue on Gleo" title="What makes Gleo a fit for asset issuance" />
+        <div className="mt-8">
+          <Rows
+            items={[
+              {
+                title: "Controls are part of the asset",
+                body: "Holder approval, freeze and clawback are settings on the token itself, fixed at issue. A regulated issuer does not have to bolt on a separate permission layer, and a buyer can see which controls apply before buying.",
+              },
+              {
+                title: "Fees you can budget for",
+                body: "Every operation pays a small network fee in ETH at the going rate. The live network panel prices a transfer every few seconds, so a forecast can be checked against reality at any time.",
+              },
+              {
+                title: "Final settlement within a block",
+                body: "Robinhood Chain confirms transactions in well under a second on average, so a transfer or redemption is done when the block is.",
+              },
+              {
+                title: "Distribution through ordinary wallets",
+                body: "Any EVM wallet that can reach Robinhood Chain can hold an approved token, and anchors give holders a route back to cash as they are listed.",
+              },
+            ]}
+          />
+        </div>
+      </Section>
+
+      <Section id="targets">
         <SectionHead
-          title="Help with the parts that are not code"
-          lead="Legal structure, custody of the underlying asset, audits and investor onboarding are where tokenization projects slow down. Service providers can take those on."
-          action={
-            <ButtonLink href="/ecosystem/service-providers" variant="line">
-              Service providers
-            </ButtonLink>
-          }
+          eyebrow="Design targets"
+          title="Numbers Gleo is designed to meet for issuers"
+          lead="These are goals for the Gleo issuance layer, not measurements. Live readings from the chain are on the network panel."
         />
-      </Section>
-
-      <Section tone="card">
-        <SectionHead title="Predictable enough to plan around" lead="Issuers need to know what operations will cost before they launch. These are the goals Gleo is designed to meet." />
         <div className="mt-10">
           <Figures
             items={[
-              { label: "Cost to issue or transfer", value: "$0.0001", tag: "target", note: "Network fee per operation" },
-              { label: "Time to final", value: "< 10 s", tag: "target", note: "For transfers and redemptions" },
+              { label: "Cost per issue or transfer", value: "$0.0001", tag: "target", note: "Network fee per operation" },
+              { label: "Time to final", value: "< 10 s", tag: "target", note: "For transfers and redemptions, wallet included" },
               { label: "Throughput", value: "4,000 tps", tag: "target", note: "Sized for corporate actions across many holders" },
             ]}
           />
         </div>
       </Section>
 
-      <Section>
-        <SectionHead title="What makes Gleo fit for issuance" />
-        <div className="mt-8">
-          <Rows
-            items={[
-              {
-                title: "Controls live in the asset",
-                body: "Holder approval, freeze and clawback are settings on the token, chosen at issue. A regulated issuer does not have to bolt on a separate permission system, and holders can see which controls apply before they buy.",
-              },
-              {
-                title: "Costs you can forecast",
-                body: "Fees are small and paid in ETH at the network's going rate. The live panel shows the current price of a transfer, so a budget can be checked against reality at any time.",
-              },
-              {
-                title: "Agreement among known validators",
-                body: "Gleo's settlement design follows federated Byzantine agreement: each validator picks the peers it trusts, and a transaction is final once overlapping groups agree. No energy race, and no waiting for probabilistic confirmations.",
-              },
-              {
-                title: "Lower running costs",
-                body: "Registers, transfer agents and reconciliation between them collapse into one shared record that issuer, holder and auditor all read.",
-              },
-              {
-                title: "Distribution built in",
-                body: "Every wallet that can reach Robinhood Chain can hold an approved token, and anchors give holders a route back to cash.",
-              },
-            ]}
-          />
-        </div>
-      </Section>
-
-      <Section tone="card">
-        <Split title="Rehearse an issuance before you commit" art="ledger">
+      <Section tone="gray" id="console">
+        <Split eyebrow="Practice mode" title="Rehearse an issuance before you commit" art="ledger">
           <p>
-            The Tokenize console walks through defining an asset, setting its controls, approving holders, minting, freezing and clawing
-            back. Each step is signed with your wallet as a practice receipt.
+            The Tokenize console walks through defining an asset, choosing its controls, approving holders, minting, freezing and clawing
+            back. Each step is signed with your wallet as a free practice receipt.
           </p>
-          <p>No transaction is sent: Gleo&apos;s issuance contracts are not deployed yet, so nothing in the console touches the chain.</p>
-          <ButtonLink href="/tokenize" variant="ink">
-            Open the console
-          </ButtonLink>
+          <p>No transaction is sent: the Gleo issuance contracts are not deployed, so nothing in the console touches the chain.</p>
+          <div className="pt-2">
+            <ButtonLink href="/tokenize">Open the Tokenize console</ButtonLink>
+          </div>
         </Split>
       </Section>
 
       <Section>
-        <SectionHead title="Issuer questions" />
-        <div className="mt-8">
-          <Faq
-            items={[
-              { q: "Can I issue a token on Gleo today?", a: "Not on mainnet through Gleo yet. The issuance contracts are designed but not deployed or audited. You can rehearse the full flow in practice mode." },
-              { q: "Which controls can I switch on?", a: "Holder approval (only approved addresses may hold), freeze (pause one holder), and clawback (return tokens to the issuer, for court orders or lost keys). Each is chosen at issue and visible to holders." },
-              { q: "Does Gleo check my investors?", a: "No. Identity and suitability checks stay with the issuer or its provider. Gleo enforces the approval list the issuer maintains." },
-              { q: "What proves the asset exists?", a: "The on-chain supply shows what was issued. Proof of the underlying, such as a vault or custodian report, has to come from the issuer and its auditor." },
-            ]}
-          />
+        <div className="grid grid-cols-1 items-center gap-10 lg:grid-cols-2 lg:gap-24">
+          <div className="min-w-0">
+            <ScenarioCover area="Tokenization" icon={Gem} label="Illustration for the gold savings token scenario" />
+          </div>
+          <div className="min-w-0">
+            <p className="t-eyebrow mb-4">Field scenario</p>
+            <h2 className="t-h2 text-balance">A bullion dealer turns vaulted gold into a savings token</h2>
+            <p className="t-lead mt-6 text-ink-2">
+              One token per allocated gram, holder approval from day one and supply anyone can compare with the vault report. An
+              illustrative plan, worked through step by step.
+            </p>
+            <div className="mt-8">
+              <ButtonLink href="/case-studies/gold-savings-token">Read the gold token scenario</ButtonLink>
+            </div>
+          </div>
         </div>
       </Section>
 
-      <Section tone="card" tight>
-        <SectionHead title="More to explore" />
-        <div className="mt-8">
+      <Section id="faq">
+        <JsonLd data={faqLd(FAQ)} />
+        <SectionHead eyebrow="FAQ" title="Questions issuers ask about tokenization" />
+        <div className="mt-10">
+          <Faq items={FAQ} />
+        </div>
+      </Section>
+
+      <Section tight>
+        <SectionHead eyebrow="Keep exploring" title="More for asset issuers" />
+        <div className="mt-10">
           <LinkTiles
             items={[
-              { href: "/developers", title: "Developer documentation", body: "Network details, endpoints and how to build against Robinhood Chain." },
-              { href: "/case-studies/gold-savings-token", title: "A gold savings token", body: "Illustrative scenario: a dealer issues grams of allocated gold.", tag: "example" },
-              { href: "/learn/intro", title: "What is Gleo", body: "The network in ten minutes, if you are starting from zero." },
+              { href: "/ecosystem/service-providers", title: "Legal and custody help", body: "Categories of firms that handle structuring, custody of the underlying and investor onboarding.", label: "See service providers" },
+              { href: "/institutions", title: "Gleo for institutions", body: "Issuance and settlement for banks, funds and asset managers.", label: "Read the institutions page" },
+              { href: "/developers", title: "Developer hub", body: "Chain details, endpoints and how to build against Robinhood Chain.", label: "Open the developer hub" },
             ]}
           />
         </div>
       </Section>
 
-      <CtaBand
-        title="Planning an issuance?"
-        body="Tell us the asset, the market and the controls you need. We will tell you honestly what is ready and what is not."
-        actions={
-          <ButtonLink href={BRAND.x} variant="fog">
-            Message {BRAND.xHandle}
-          </ButtonLink>
-        }
-      />
+      <Section tone="gray">
+        <SectionHead
+          split
+          eyebrow="Talk to us"
+          title="Planning an issuance?"
+          lead="Tell us the asset, the market and the controls you need. We will say honestly what is ready and what is still being built."
+          action={<ButtonLink href={BRAND.x}>Message {BRAND.xHandle}</ButtonLink>}
+        />
+      </Section>
+      <JumpTo items={JUMP} />
     </>
   );
 }

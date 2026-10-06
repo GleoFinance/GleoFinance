@@ -54,7 +54,7 @@ export const POSTS: Post[] = [
       {
         heading: "Where practice data lives",
         paragraphs: [
-          "The signed receipts stay in your browser. Clearing site data removes them. Nothing about them is real money, and every practice screen carries an orange Practice tag so it cannot be mistaken for a live one.",
+          "The signed receipts stay in your browser. Clearing site data removes them. Nothing about them is real money, and every practice screen carries a lavender Practice tag so it cannot be mistaken for a live one.",
           "Tools that work with tokens that already exist, such as sending ETH or USDG, are live and move real funds from your wallet after you confirm.",
         ],
       },
@@ -153,3 +153,43 @@ export const postsByDate = () => [...POSTS].sort((a, b) => b.date.localeCompare(
 export const findPost = (slug: string) => POSTS.find((p) => p.slug === slug) ?? null;
 export const formatDate = (iso: string) =>
   new Date(`${iso}T12:00:00Z`).toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric", timeZone: "UTC" });
+
+/** Search titles and descriptions per post (title gets " — Gleo" appended). */
+export const POST_SEO: Record<string, { title: string; description: string; keyword: string }> = {
+  "why-gleo-runs-on-robinhood-chain": {
+    keyword: "Robinhood Chain payments",
+    title: "Why Gleo Builds on Robinhood Chain, Not a New Chain",
+    description:
+      "Robinhood Chain already had a dollar token, verified stock tokens and fast blocks. Here is why Gleo builds payments on it instead of launching its own chain.",
+  },
+  "practice-mode-explained": {
+    keyword: "practice mode",
+    title: "Practice Mode Explained: Signed Receipts, No Gas",
+    description:
+      "Some Gleo tools wait for audited contracts. Practice mode lets you walk the full flow and sign a free receipt, with no transaction and no funds at risk.",
+  },
+  "live-readings-and-design-targets": {
+    keyword: "live network data",
+    title: "Live Network Readings Versus Design Targets",
+    description:
+      "Why some Gleo figures refresh every few seconds from Robinhood Chain and others carry a Design target tag, and how to check any live network data yourself.",
+  },
+  "introducing-gleo-token": {
+    keyword: "$GLEO token",
+    title: "Introducing $GLEO, the Gleo Token on Robinhood Chain",
+    description:
+      "What the $GLEO token is for, the three places its contract address will appear at launch, and how to avoid fake tokens. Read this before you trade or swap.",
+  },
+  "asset-controls-design-notes": {
+    keyword: "tokenized asset controls",
+    title: "Tokenized Asset Controls: Freeze, Clawback, Approval",
+    description:
+      "Design notes on tokenized asset controls: freeze, clawback and holder approval set at creation, one-way afterwards, visible on-chain to every holder.",
+  },
+  "roadmap-notes-autumn-2026": {
+    keyword: "Gleo roadmap",
+    title: "Roadmap Notes, Autumn 2026: What Ships and What Waits",
+    description:
+      "Gleo roadmap notes for autumn 2026: which payment tools are live, which contracts wait for an external audit, and what we deliberately are not promising.",
+  },
+};

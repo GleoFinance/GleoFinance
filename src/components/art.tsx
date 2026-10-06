@@ -1,5 +1,6 @@
-/* Line drawings used beside copy. Plain SVG in the brand palette: ink (or
-   fog on dark), a sea-green route and a flare dot for "the payment". */
+/* Line drawings used beside copy. Plain SVG in the site palette: ink (or
+   white on dark bands), lavender fills, a yellow route and a lavender dot
+   for "the payment". */
 
 export type ArtName =
   | "globe"
@@ -20,8 +21,8 @@ export type ArtName =
 
 export function Art({ name, night = false, className = "" }: { name: ArtName; night?: boolean; className?: string }) {
   const ink = night ? "var(--color-fog)" : "var(--color-ink)";
-  const soft = night ? "rgba(230,238,235,0.08)" : "var(--color-card)";
-  const faint = night ? "rgba(230,238,235,0.22)" : "rgba(10,28,36,0.18)";
+  const soft = night ? "rgba(183,172,232,0.32)" : "var(--color-flare-soft)";
+  const faint = night ? "rgba(255,255,255,0.24)" : "rgba(15,15,15,0.18)";
   const sea = "var(--color-sea)";
   const flare = "var(--color-flare)";
   const common = { fill: "none", stroke: ink, strokeWidth: 2, strokeLinecap: "round" as const, strokeLinejoin: "round" as const };

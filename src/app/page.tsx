@@ -1,220 +1,248 @@
 import Link from "next/link";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, Building2, Code2, Landmark, Megaphone, Network, Smartphone, Users, Wrench } from "lucide-react";
 import { BRAND } from "@/config/brand";
-import { STOCK_TOKENS } from "@/config/assets.generated";
 import { postsByDate, formatDate } from "@/lib/content/blog";
+import { pageMeta } from "@/lib/seo";
 import { Art } from "@/components/art";
-import { HeroSlip } from "@/components/home/HeroSlip";
-import { LiveFigures } from "@/components/live/LiveFigures";
-import { ButtonLink, Container, CtaBand, Figures, Rows, Section, SectionHead, Split, Tag } from "@/components/ui";
+import { Glyph } from "@/components/glyph";
+import { HomeHero } from "@/components/home/HomeHero";
+import { PostRail } from "@/components/home/PostRail";
+import { PostCover } from "@/components/content/PostCover";
+import { StatGrid } from "@/components/live/StatGrid";
+import { ButtonLink, Container, Eyebrow, SectionHead, TextLink } from "@/components/ui";
+
+export const metadata = pageMeta({
+  path: "/",
+  title: "Cross-Border Stablecoin Payments on Robinhood Chain",
+  description:
+    "Send USDG across borders in about a block, hold tokenized stocks verified on-chain and try open DeFi tools. Gleo runs on Robinhood Chain. Start a payment.",
+  keywords: ["cross-border stablecoin payments", "Robinhood Chain", "USDG transfer", "tokenized stocks", "DeFi"],
+});
 
 const AUDIENCES = [
   {
-    title: "Builders",
-    body: "Contracts, RPC endpoints, chain details and a docs map that starts where you are. Ship a payment flow in an afternoon and grow it from there.",
+    icon: Wrench,
+    title: "For builders and developers",
+    body: "Contract notes, RPC details, a docs map and live chain readings in one place. Prototype a USDG payment flow on Robinhood Chain in an afternoon, then grow it into a product.",
     href: "/developers",
     cta: "Open the developer hub",
   },
   {
-    title: "Institutions",
-    body: "Issue funds, deposits and securities as tokens with freeze, clawback and holder approval built into the asset, and settle around the clock.",
+    icon: Landmark,
+    title: "For banks and asset issuers",
+    body: "Issue funds, deposits or securities as tokens with freeze, clawback and holder approval written into the asset itself, then settle with counterparties at any hour.",
     href: "/institutions",
     cta: "See issuance and settlement",
   },
   {
-    title: "Fintechs and wallets",
-    body: "Give your users dollar payments that clear in seconds, cash access through anchors and a shelf of tokenized assets, behind your own interface.",
+    icon: Smartphone,
+    title: "For fintech apps and wallets",
+    body: "Give your users dollar transfers that land in about a block, local cash access through anchors and a shelf of verified stock tokens, all under your own brand.",
     href: "/fintechs",
-    cta: "See payment rails",
+    cta: "See payment rails for apps",
   },
 ];
 
+const JOBS = [
+  {
+    art: "globe" as const,
+    title: "Gleo for payments",
+    body: "Send USDG across borders from your own wallet, with the address checked and the network fee shown before you sign.",
+    href: "/use-cases/payments",
+    cta: "Explore cross-border payments",
+  },
+  {
+    art: "token" as const,
+    title: "Gleo for tokenization",
+    body: "Bring funds, bonds or invoices on-chain as tokens that carry their own holder rules wherever they travel.",
+    href: "/use-cases/tokenization",
+    cta: "Explore asset tokenization",
+  },
+  {
+    art: "pool" as const,
+    title: "Gleo for DeFi",
+    body: "Lend, borrow and pool tokenized assets in markets anyone can inspect. Practice every flow today, free and without a transaction.",
+    href: "/use-cases/defi",
+    cta: "Explore DeFi on Gleo",
+  },
+];
+
+const GROW = [
+  { icon: Code2, title: "Builder grants", href: "/grants", cta: "Apply for a builder grant" },
+  { icon: Building2, title: "Enterprise fund", href: "/enterprise-fund", cta: "Read about the enterprise fund" },
+  { icon: Users, title: "Ecosystem map", href: "/ecosystem", cta: "Browse the Gleo ecosystem" },
+];
+
 export default function Home() {
-  const latest = postsByDate().slice(0, 4);
+  const posts = postsByDate();
   return (
     <>
-      {/* Hero */}
-      <section className="meridians border-b border-line bg-paper">
-        <Container className="grid grid-cols-1 items-center gap-12 py-14 sm:py-20 lg:grid-cols-[minmax(0,1.2fr)_minmax(0,1fr)] lg:py-24">
-          <div className="min-w-0">
-            <p className="mb-6 inline-flex flex-wrap items-center gap-2 rounded-full border border-line-2 bg-card py-1 pr-3 pl-1 text-[13px] text-ink-2">
-              <span className="rounded-full bg-ink px-2 py-0.5 font-mono text-[11px] text-fog">{BRAND.symbol}</span>
-              <span className="sm:hidden">Live on Robinhood Chain</span>
-              <span className="hidden sm:inline">Payments, tokenized assets and DeFi on Robinhood Chain</span>
-            </p>
-            <h1 className="font-display text-[clamp(2.8rem,7vw,6rem)] leading-[0.92] font-bold tracking-[-0.04em]">
-              Global Finance.
-              <br />
-              <span className="text-sea">No Borders.</span>
-            </h1>
-            <p className="mt-7 max-w-xl text-[19px] leading-relaxed text-ink-2">
-              {BRAND.tagline} Gleo turns a dollar token, a shelf of real-world assets and open markets into one set of rails anyone can
-              build on.
-            </p>
-            <div className="mt-9 flex flex-wrap gap-3">
-              <ButtonLink href="/send" variant="accent">
-                Send a payment
-              </ButtonLink>
-              <ButtonLink href="/learn/intro" variant="line">
-                How Gleo works
-              </ButtonLink>
-            </div>
-          </div>
-          <div className="relative min-w-0">
-            <Art name="globe" className="opacity-90" />
-            <div className="mt-[-12%] flex justify-center lg:absolute lg:-bottom-6 lg:-left-10 lg:mt-0 lg:block">
-              <HeroSlip />
-            </div>
-          </div>
-        </Container>
-      </section>
+      <HomeHero />
 
-      {/* Already on the chain */}
-      <section className="border-b border-line bg-card">
-        <Container className="flex flex-col gap-4 py-6 md:flex-row md:items-center">
-          <p className="shrink-0 text-sm font-semibold text-ink-2 md:w-56">Already on Robinhood Chain, usable through Gleo today</p>
-          <ul className="flex min-w-0 flex-wrap gap-2">
-            {["USDG", "WETH", ...STOCK_TOKENS.map((t) => t.symbol)].map((s) => (
-              <li key={s}>
-                <Link href="/assets" className="block rounded-full border border-line-2 px-3 py-1 font-mono text-[12.5px] hover:border-ink">
-                  {s}
-                </Link>
+      {/* Three ways in */}
+      <section className="bg-night py-16 text-fog">
+        <Container>
+          <h2 className="sr-only">Who Gleo is built for</h2>
+          <ul className="grid grid-cols-1 gap-6 md:grid-cols-3">
+            {AUDIENCES.map((a) => (
+              <li key={a.title} className="flex min-w-0 flex-col border border-fog/25 bg-night-2 px-6 py-8">
+                <Glyph icon={a.icon} dark />
+                <h3 className="t-h3 mt-12">{a.title}</h3>
+                <p className="mt-3 flex-1 text-[16px] leading-relaxed text-fog/70">{a.body}</p>
+                <TextLink href={a.href} dark className="mt-8">
+                  {a.cta}
+                </TextLink>
               </li>
             ))}
           </ul>
         </Container>
       </section>
 
-      {/* Three ways in */}
-      <section className="bg-night py-16 text-fog sm:py-24">
+      {/* Journal rail */}
+      <section className="bg-paper py-16">
         <Container>
-          <SectionHead dark title="One network, three ways in" lead="Pick the door that matches what you are building. They all lead to the same ledger." />
-          <div className="mt-12 grid grid-cols-1 border-t border-fog/15 md:grid-cols-3">
-            {AUDIENCES.map((a, i) => (
-              <div key={a.title} className={`min-w-0 py-8 md:px-8 ${i > 0 ? "border-t border-fog/15 md:border-t-0 md:border-l" : "md:pl-0"}`}>
-                <p className="font-mono text-[12px] text-fog-2">{String(i + 1).padStart(2, "0")}</p>
-                <h3 className="mt-3 font-display text-[1.7rem] font-semibold">{a.title}</h3>
-                <p className="mt-3 text-[15.5px] leading-relaxed text-fog-2">{a.body}</p>
-                <Link href={a.href} className="mt-6 inline-flex items-center gap-1.5 font-semibold text-fog hover:underline">
-                  {a.cta} <ArrowRight className="size-4" />
-                </Link>
-              </div>
-            ))}
+          <SectionHead
+            eyebrow="From the journal"
+            title="Gleo news and network notes"
+            lead="Release notes, design decisions and the reasoning behind them, written by the people building Gleo on Robinhood Chain."
+          />
+          <div className="mt-2">
+            <PostRail>
+              {posts.map((post) => (
+                <li key={post.slug} className="w-[78%] shrink-0 snap-start sm:w-[calc((100%-48px)/2.4)] lg:w-[calc((100%-72px)/4)]">
+                  <Link href={`/blog/${post.slug}`} className="group block">
+                    <PostCover title={post.title} category={post.category} />
+                    <p className="mt-4 text-[12px] leading-relaxed text-ink-3">
+                      {formatDate(post.date)} • {post.category}
+                    </p>
+                    <h3 className="mt-2 text-[16px] leading-[1.6] font-semibold group-hover:underline">{post.title}</h3>
+                  </Link>
+                </li>
+              ))}
+            </PostRail>
           </div>
+          <TextLink href="/blog" className="mt-8">
+            Read every Gleo journal post
+          </TextLink>
         </Container>
       </section>
 
-      {/* Journal */}
-      <Section>
-        <SectionHead
-          title="From the journal"
-          lead="Product notes, network decisions and the reasoning behind them, written by the people building Gleo."
-          action={
-            <ButtonLink href="/blog" variant="line">
-              All posts
-            </ButtonLink>
-          }
-        />
-        <ul className="mt-10 border-t border-line-2">
-          {latest.map((post) => (
-            <li key={post.slug} className="border-b border-line-2">
-              <Link href={`/blog/${post.slug}`} className="group grid grid-cols-1 gap-2 py-6 md:grid-cols-[180px_minmax(0,1fr)_auto] md:items-baseline md:gap-8">
-                <span className="font-mono text-[12.5px] text-ink-3">
-                  {formatDate(post.date)} · {post.category}
-                </span>
-                <span className="min-w-0">
-                  <span className="block font-display text-[1.4rem] leading-snug font-semibold group-hover:underline">{post.title}</span>
-                  <span className="mt-1 block text-[15px] text-ink-2">{post.summary}</span>
-                </span>
-                <ArrowRight className="hidden size-5 text-ink-3 md:block" />
-              </Link>
-            </li>
-          ))}
-        </ul>
-      </Section>
-
-      {/* Performance */}
-      <Section tone="card">
-        <SectionHead
-          title="Measured, not promised"
-          lead="The figures below are read from Robinhood Chain every few seconds. Underneath them are the targets Gleo's payment layer is designed to hit, marked as targets until they can be measured."
-        />
-        <div className="mt-10">
-          <LiveFigures />
-        </div>
-        <div className="mt-12">
-          <p className="mb-4 text-sm font-semibold text-ink-2">Design targets for Gleo payments</p>
-          <Figures
-            items={[
-              { label: "Settlement", value: "< 10 s", tag: "target", note: "From signing to final, including the wallet round trip" },
-              { label: "Fee per payment", value: "$0.0001", tag: "target", note: "Paid in ETH; compare the live reading above" },
-              { label: "Throughput", value: "4,000 tps", tag: "target", note: "Payments per second the routing layer is sized for" },
-              { label: "Reach", value: "180+", tag: "target", note: "Countries we aim to cover through anchors" },
-            ]}
-          />
-        </div>
-      </Section>
+      {/* Network performance */}
+      <section className="bg-paper pt-8 pb-16">
+        <Container>
+          <div className="max-w-[612px]">
+            <Eyebrow>Network</Eyebrow>
+            <h2 className="t-h2">Fast, cheap and measurable</h2>
+            <p className="t-lead mt-6 text-ink-2">
+              Robinhood Chain gives Gleo sub-second blocks and transfer fees in fractions of a cent. The panel below is read from the chain
+              every few seconds, so each figure can be checked on the public block explorer.
+            </p>
+          </div>
+          <div className="mt-9">
+            <StatGrid />
+          </div>
+          <p className="mt-4 text-[13px] text-ink-3">
+            Gleo&apos;s own payment targets are published separately and labelled as targets.{" "}
+            <Link href="/network" className="text-ink underline underline-offset-4">
+              Open the live network panel
+            </Link>
+          </p>
+        </Container>
+      </section>
 
       {/* Use cases */}
-      <Section>
-        <SectionHead title="Built for work that already exists" lead="Remittances, payroll, funds and loans are old jobs. Gleo makes them cheaper, faster and open around the clock." />
-        <div className="mt-14 space-y-20">
-          <Split title="Payments that clear before the coffee cools" art="globe">
-            <p>Send dollars from one wallet to another anywhere the internet reaches. The recipient sees the money within a block, and the fee is a fraction of a cent.</p>
-            <p>
-              <Link href="/use-cases/payments" className="font-semibold text-sea-deep underline underline-offset-4">
-                Gleo for payments
-              </Link>
-            </p>
-          </Split>
-          <Split title="Put real assets on the ledger" art="token" reverse>
-            <p>Gold, shares, bonds, invoices and property can be issued as tokens that carry their rules with them: who may hold them, and what the issuer can do if something goes wrong.</p>
-            <p>
-              <Link href="/use-cases/tokenization" className="font-semibold text-sea-deep underline underline-offset-4">
-                Gleo for tokenization
-              </Link>
-            </p>
-          </Split>
-          <Split title="Open markets for real-world value" art="pool">
-            <p>Lend, borrow and trade against tokenized assets in markets anyone can inspect. Smart contracts hold the rules; nobody holds your funds for you.</p>
-            <p>
-              <Link href="/use-cases/defi" className="font-semibold text-sea-deep underline underline-offset-4">
-                Gleo for DeFi
-              </Link>
-            </p>
-          </Split>
-        </div>
-      </Section>
+      <section className="bg-night py-16 text-fog lg:py-20">
+        <Container>
+          <SectionHead
+            dark
+            eyebrow="Gleo in practice"
+            title="Three jobs Gleo does on Robinhood Chain"
+            lead="Remittances, asset issuance and lending are old jobs. Here is how Gleo handles each one on-chain, and what you can try right now."
+          />
+          <ul className="mt-12 grid grid-cols-1 gap-10 md:grid-cols-3 md:gap-6">
+            {JOBS.map((j) => (
+              <li key={j.title} className="flex min-w-0 flex-col">
+                <div className="aspect-[3/2] w-full overflow-hidden">
+                  <Art name={j.art} night className="size-full" />
+                </div>
+                <h3 className="t-h3 mt-6">{j.title}</h3>
+                <p className="mt-3 flex-1 text-[16px] leading-relaxed text-fog/70">{j.body}</p>
+                <TextLink href={j.href} dark className="mt-8">
+                  {j.cta}
+                </TextLink>
+              </li>
+            ))}
+          </ul>
+        </Container>
+      </section>
 
       {/* Grants */}
-      <Section tone="card">
-        <SectionHead title="Money for people who build" lead="Grants for open-source work, an enterprise fund for companies, and a map of what already plugs in." />
-        <div className="mt-10">
-          <Rows
-            cols={1}
-            items={[
-              { title: "Builder grants", body: "Milestone-based support for wallets, tools and integrations that make Gleo more useful. Applications open with the grants round.", href: "/grants", meta: <Tag tone="plan">Opening soon</Tag> },
-              { title: "Enterprise fund", body: "For companies taking payments or issuance to production: capital, introductions and help with the regulated parts.", href: "/enterprise-fund" },
-              { title: "Explore the ecosystem", body: "Wallets, explorers, oracles and launchpads on Robinhood Chain that Gleo works with today.", href: "/ecosystem" },
-            ]}
-          />
-        </div>
-      </Section>
+      <section className="bg-sand py-16">
+        <Container>
+          <Eyebrow>Grow with Gleo</Eyebrow>
+          <h2 className="t-h2">Grants and funding for builders</h2>
+          <ul className="mt-10 grid grid-cols-1 gap-10 md:grid-cols-3 md:gap-6">
+            {GROW.map((g) => (
+              <li key={g.title} className="min-w-0">
+                <Glyph icon={g.icon} />
+                <h3 className="t-h3 mt-8">{g.title}</h3>
+                <TextLink href={g.href} className="mt-4">
+                  {g.cta}
+                </TextLink>
+              </li>
+            ))}
+          </ul>
+        </Container>
+      </section>
 
-      <CtaBand
-        title="Hear it when it ships"
-        body={`We post releases, contract addresses and grant rounds on X first. An email list opens once there is enough worth sending.`}
-        actions={
-          <>
-            <ButtonLink href={BRAND.x} variant="fog">
-              Follow {BRAND.xHandle}
-            </ButtonLink>
-            <ButtonLink href="/community" variant="line" className="border-fog/30 text-fog hover:border-fog">
-              Community
-            </ButtonLink>
-          </>
-        }
-      />
+      {/* Updates */}
+      <section className="relative isolate overflow-hidden bg-paper">
+        <div className="glow-field -z-10" aria-hidden="true" />
+        <Container className="py-16 lg:py-20">
+          <div className="mx-auto max-w-[612px] text-center">
+            <Eyebrow>Updates</Eyebrow>
+            <h2 className="t-h2 text-balance">Hear about every Gleo release first</h2>
+            <p className="t-lead mt-6 text-ink-2">
+              There is no mailing list yet. Releases, the {BRAND.symbol} contract address and grant rounds are posted on X before anywhere
+              else.
+            </p>
+          </div>
+          <div className="mx-auto mt-10 max-w-[612px]">
+            <ul className="space-y-6 text-left">
+              <li className="flex gap-4">
+                <span className="mt-0.5 flex size-6 shrink-0 items-center justify-center rounded-[4px] border border-ink bg-paper">
+                  <Network className="size-3.5" />
+                </span>
+                <span>
+                  <span className="block font-semibold">Network notes</span>
+                  <span className="mt-1 block leading-relaxed text-ink-2">Releases, contract addresses, incidents and what changed on the live panels.</span>
+                </span>
+              </li>
+              <li className="flex gap-4">
+                <span className="mt-0.5 flex size-6 shrink-0 items-center justify-center rounded-[4px] border border-ink bg-paper">
+                  <Megaphone className="size-3.5" />
+                </span>
+                <span>
+                  <span className="block font-semibold">Builder notes</span>
+                  <span className="mt-1 block leading-relaxed text-ink-2">Grant rounds, office hours and changes that affect your integration.</span>
+                </span>
+              </li>
+            </ul>
+            <div className="mt-10 flex flex-wrap justify-center gap-3">
+              <ButtonLink href={BRAND.x}>Follow {BRAND.xHandle} on X</ButtonLink>
+              <ButtonLink href="/community" variant="line">
+                Join the community
+              </ButtonLink>
+            </div>
+            <p className="mt-8 text-center text-[12px] text-ink-3">
+              Only trust contract addresses shown on {BRAND.domain} and on our X account.{" "}
+              <Link href="/faq" className="underline underline-offset-4">
+                Read the Gleo FAQ <ArrowRight className="inline size-3" />
+              </Link>
+            </p>
+          </div>
+        </Container>
+      </section>
     </>
   );
 }

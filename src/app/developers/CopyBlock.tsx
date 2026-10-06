@@ -16,10 +16,10 @@ export function CopyBlock({ label, text }: { label: string; text: string }) {
     }
   };
   return (
-    <div className="min-w-0 overflow-hidden rounded-2xl border border-line-2 bg-night text-fog">
+    <div className="min-w-0 overflow-hidden border border-ink bg-night text-fog">
       <div className="flex items-center justify-between gap-3 border-b border-fog/15 px-4 py-2.5">
-        <span className="font-mono text-[11px] tracking-[0.08em] text-fog-2 uppercase">{label}</span>
-        <button type="button" onClick={copy} className="inline-flex cursor-pointer items-center gap-1.5 text-[13px] font-semibold text-fog hover:underline">
+        <span className="text-[12px] font-semibold text-fog">{label}</span>
+        <button type="button" onClick={copy} className="inline-flex cursor-pointer items-center gap-1.5 rounded-full bg-sea px-3 py-1 text-[13px] font-semibold text-ink">
           {copied ? <Check className="size-3.5" /> : <Copy className="size-3.5" />}
           {copied ? "Copied" : "Copy"}
         </button>

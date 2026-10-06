@@ -7,6 +7,9 @@ export type Scenario = {
   title: string;
   who: string;
   area: "Payments" | "Tokenization" | "Ramps" | "Aid" | "DeFi";
+  /** Search title (brand is appended) and meta description. */
+  seoTitle: string;
+  seoDescription: string;
   summary: string;
   problem: string[];
   setup: { title: string; body: string }[];
@@ -21,6 +24,9 @@ export const SCENARIOS: Scenario[] = [
     title: "Paying forty contractors in nine countries on the same afternoon",
     who: "A small design studio with a distributed team",
     area: "Payments",
+    seoTitle: "Global Contractor Payroll in USDG: A Worked Example",
+    seoDescription:
+      "Worked example of global contractor payroll in USDG: forty people in nine countries paid within a block, with every payout traceable. Read the full scenario.",
     summary:
       "A studio replaces monthly wire batches with USDG payouts that land within a block, and lets each contractor pick a local cash-out route.",
     problem: [
@@ -54,6 +60,9 @@ export const SCENARIOS: Scenario[] = [
     title: "Turning a vault of gold bars into a token people can save in",
     who: "A regional bullion dealer",
     area: "Tokenization",
+    seoTitle: "How to Tokenize Gold: A Gold Savings Token Scenario",
+    seoDescription:
+      "How a bullion dealer could tokenize gold: one token per allocated gram, holder approval and clawback from day one, supply checked on-chain. Read the plan.",
     summary:
       "A dealer issues a token backed one-to-one by allocated gold, with holder approval and clawback switched on from day one.",
     problem: [
@@ -86,6 +95,9 @@ export const SCENARIOS: Scenario[] = [
     title: "Running a cash assistance pilot for 1,200 households",
     who: "A relief organisation working after a flood",
     area: "Aid",
+    seoTitle: "Digital Cash Assistance Pilot for 1,200 Households",
+    seoDescription:
+      "A digital cash assistance pilot after a flood: weekly USDG to phone wallets, cash-out at local agents, outflows donors can check. Walk through each step.",
     summary:
       "An aid team sends weekly support to recipients' wallets and lets them collect cash at local agents, with every payment visible to donors.",
     problem: [
@@ -119,6 +131,9 @@ export const SCENARIOS: Scenario[] = [
     title: "Borrowing against tokenized shares to fund inventory",
     who: "An online retailer ahead of its busy season",
     area: "DeFi",
+    seoTitle: "Borrowing Against Tokenized Stocks to Fund Inventory",
+    seoDescription:
+      "Borrowing against tokenized stocks for six weeks instead of selling them: collateral, loan-to-value, risks and repayment. Rehearse the plan in practice mode.",
     summary:
       "A retailer that holds tokenized index shares borrows USDG against them for six weeks instead of selling, and repays from season revenue.",
     problem: [

@@ -139,7 +139,7 @@ function Console() {
     });
 
   const toggle = (key: "approval" | "freeze" | "clawback", label: string, note: string) => (
-    <label className="flex cursor-pointer items-start gap-3 rounded-xl border border-line-2 px-3 py-2.5">
+    <label className="flex cursor-pointer items-start gap-3 border border-line-2 px-3 py-2.5">
       <input type="checkbox" checked={form[key]} onChange={(e) => setForm({ ...form, [key]: e.target.checked })} className="mt-1 accent-[var(--color-sea)]" />
       <span>
         <span className="block text-[14.5px] font-semibold">{label}</span>
@@ -152,13 +152,13 @@ function Console() {
     <div className="space-y-12">
       <div className="grid grid-cols-1 gap-8 xl:grid-cols-[minmax(0,420px)_minmax(0,1fr)]">
         <form
-          className="min-w-0 space-y-4 rounded-2xl border border-line-2 bg-card p-5"
+          className="min-w-0 space-y-4 border border-line bg-paper p-5"
           onSubmit={(e) => {
             e.preventDefault();
             submitIssue();
           }}
         >
-          <p className="font-display text-xl font-semibold">Issue an asset</p>
+          <p className="font-display text-[24px] leading-[1.2] tracking-[-0.02em]">Issue an asset</p>
           <div className="grid grid-cols-1 gap-3 sm:grid-cols-[minmax(0,1fr)_120px]">
             <div className="min-w-0">
               <label className="label" htmlFor="tk-name">
@@ -170,7 +170,7 @@ function Console() {
               <label className="label" htmlFor="tk-symbol">
                 Symbol
               </label>
-              <input id="tk-symbol" className="field mt-1.5 font-mono uppercase" value={form.symbol} onChange={(e) => setForm({ ...form, symbol: e.target.value })} placeholder="GLDG" />
+              <input id="tk-symbol" className="field mt-1.5 font-semibold uppercase" value={form.symbol} onChange={(e) => setForm({ ...form, symbol: e.target.value })} placeholder="GLDG" />
             </div>
           </div>
           <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
@@ -210,7 +210,7 @@ function Console() {
 
         <div className="min-w-0 space-y-6">
           {assets.length === 0 ? (
-            <div className="rounded-2xl border border-dashed border-line-2 p-6 text-[15px] text-ink-2">
+            <div className="border border-dashed border-line-2 p-6 text-[15px] text-ink-2">
               Your practice assets appear here, with holders, frozen accounts and every control you exercise.
             </div>
           ) : (
@@ -219,7 +219,7 @@ function Console() {
         </div>
       </div>
       <div>
-        <h2 className="font-display text-2xl font-semibold">Signed receipts</h2>
+        <h2 className="font-display text-[28px] leading-[1.2] tracking-[-0.02em]">Signed receipts</h2>
         <div className="mt-4">
           <ReceiptLog receipts={receipts} onClear={clear} describe={(r) => `${r.details.Action} · ${r.details.Symbol ?? r.details["Asset id"]?.split("-")[0]}${r.details.Amount ? ` · ${r.details.Amount}` : ""}`} />
         </div>
@@ -249,7 +249,7 @@ function AssetCard({ asset: a, issuer, record }: { asset: Asset; issuer: string;
     });
 
   return (
-    <article className="rounded-2xl border border-line-2 bg-card p-5">
+    <article className="border border-line bg-paper p-5">
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div className="min-w-0">
           <p className="font-mono text-lg font-semibold">{a.symbol}</p>
@@ -257,7 +257,7 @@ function AssetCard({ asset: a, issuer, record }: { asset: Asset; issuer: string;
             {a.name} · {a.cls}
           </p>
         </div>
-        <div className="flex flex-wrap gap-1.5 font-mono text-[10.5px] uppercase">
+        <div className="flex flex-wrap gap-1.5 text-[10.5px] font-semibold uppercase">
           {[
             ["approval", a.approval],
             ["freeze", a.freeze],

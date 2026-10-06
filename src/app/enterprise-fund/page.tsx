@@ -1,19 +1,30 @@
-import type { Metadata } from "next";
+import { Compass, Handshake, Route } from "lucide-react";
 import { BRAND } from "@/config/brand";
-import { ButtonLink, CtaBand, PageHero, Section, SectionHead, Split, Steps, Tag } from "@/components/ui";
+import { pageMeta } from "@/lib/seo";
+import { Glyph } from "@/components/glyph";
+import { ButtonLink, CtaBand, Eyebrow, InfoCards, PageHero, Section, SectionHead, Split, Tag } from "@/components/ui";
 
-export const metadata: Metadata = {
-  title: "Enterprise fund",
-  description: "Capital and hands-on help for companies taking payments, ramps or asset issuance on Gleo into production.",
-};
+export const metadata = pageMeta({
+  path: "/enterprise-fund",
+  title: "Enterprise Fund for Payment and Fintech Companies",
+  description:
+    "Capital, partner introductions and launch help for payment firms, ramps and asset issuers building on Gleo and Robinhood Chain. See what the fund looks for.",
+  keywords: ["enterprise fund", "fintech funding", "payments startup investment", "Robinhood Chain", "stablecoin companies"],
+});
 
 const CRITERIA = [
   ["Fit with Gleo", "The product moves money or real-world assets, and Gleo makes it cheaper, faster or reachable where it was not."],
   ["Impact", "Real people or businesses end up with better access to payments, savings or markets."],
-  ["Team", "Founders who know the regulated side of their market as well as the code."],
+  ["Team", "Founders who understand the regulated side of their market as well as the code."],
   ["Timing", "A product close to launch, or live elsewhere and ready to add Robinhood Chain."],
-  ["Viability", "A plan to earn revenue that does not depend on token prices going up."],
+  ["Viability", "A revenue plan that does not rely on token prices going up."],
   ["Use case", "A concrete flow we can test: who pays whom, in what asset, and how they cash out."],
+];
+
+const HELP = [
+  { icon: Handshake, title: "Introductions", body: "Warm connections to anchors, wallets and issuers building on Gleo, so a first integration partner is one message away." },
+  { icon: Route, title: "Rails that reach people", body: "Help planning cash-in and cash-out coverage for the corridors you serve as the anchor network grows." },
+  { icon: Compass, title: "Support at each stage", body: "From first pilot to later rounds: technical reviews, compliance questions and introductions to follow-on investors." },
 ];
 
 export default function EnterpriseFundPage() {
@@ -21,8 +32,14 @@ export default function EnterpriseFundPage() {
     <>
       <PageHero
         tone="night"
-        title="A fund for companies that move real money"
-        lead="Grants pay for open tools. The enterprise fund backs companies building businesses on Gleo: payment firms, ramps, issuers and the infrastructure under them."
+        eyebrow="Enterprise fund"
+        title="An enterprise fund for companies that move real money"
+        lead={
+          <p>
+            Grants pay for open tools. The Gleo enterprise fund is meant to back companies building businesses on Robinhood Chain: payment firms,
+            ramps, issuers and the infrastructure underneath them. It opens after Gleo Contracts deploy.
+          </p>
+        }
         art="bank"
         meta={<Tag tone="plan">Opens after Gleo Contracts deploy</Tag>}
         actions={
@@ -33,61 +50,57 @@ export default function EnterpriseFundPage() {
       />
 
       <Section>
-        <Split art="globe" title="Why a fund">
+        <Split eyebrow="Why it exists" art="globe" title="Why payment companies need a fund">
           <p>
             Most money still crosses borders slowly and at a high price. The companies that change that need runway through licensing, banking
-            partners and the first months of volume, which is longer than a grant covers.
+            partners and the first months of volume, which takes longer than a grant covers.
           </p>
-          <p>The fund is meant to carry good teams through that stretch and to keep the network useful for the people those companies serve.</p>
+          <p>The fund is designed to carry good teams through that stretch and keep the network useful for the people those companies serve.</p>
         </Split>
       </Section>
 
-      <Section tone="card">
-        <SectionHead title="More than capital" lead="Money is the smallest part of what a payments company needs from a network." />
-        <div className="mt-12">
-          <Steps
-            steps={[
-              { title: "Introductions", body: "Warm connections to anchors, wallets and issuers already building on Gleo, so your first integration partner is a message away." },
-              { title: "Rails that reach people", body: "Help planning cash-in and cash-out coverage for the corridors you serve, using the anchor network as it grows." },
-              { title: "Support at each stage", body: "From first pilot to follow-on rounds: technical reviews, compliance questions and introductions to later investors." },
-            ]}
-          />
-        </div>
+      <Section tone="sand">
+        <SectionHead eyebrow="Beyond capital" title="Help that goes past the cheque" lead="Money is the smallest part of what a payments company needs from a network." />
+        <ul className="mt-12 grid grid-cols-1 gap-10 md:grid-cols-3 md:gap-6">
+          {HELP.map((h) => (
+            <li key={h.title} className="min-w-0">
+              <Glyph icon={h.icon} />
+              <h3 className="t-h3 mt-8">{h.title}</h3>
+              <p className="mt-3 text-[16px] leading-relaxed text-ink-2">{h.body}</p>
+            </li>
+          ))}
+        </ul>
       </Section>
 
       <Section>
-        <SectionHead title="Investments so far" />
-        <p className="mt-6 max-w-2xl text-[17px] leading-relaxed text-ink-2">
-          None. No investments have been announced yet. When the fund makes one, it will be listed here with the date and what the company is
-          building, and announced on X.
-        </p>
+        <div className="grid grid-cols-1 gap-6 lg:grid-cols-2 lg:gap-16">
+          <div className="min-w-0">
+            <Eyebrow>Portfolio</Eyebrow>
+            <h2 className="t-h2">Investments made so far</h2>
+          </div>
+          <p className="t-lead min-w-0 text-ink-2 lg:pt-9">
+            None. The fund has not announced an investment yet. When it makes one, the company will be listed here with the date and what it is
+            building, and the news will go out on X.
+          </p>
+        </div>
       </Section>
 
-      <Section tone="card">
-        <SectionHead title="What we look for" />
-        <dl className="mt-10 grid grid-cols-1 gap-x-12 md:grid-cols-2">
-          {CRITERIA.map(([t, b], i) => (
-            <div key={t} className="min-w-0 border-t border-line-2 py-6">
-              <dt className="flex items-baseline gap-4 font-display text-xl font-semibold">
-                <span className="font-mono text-[12px] font-normal text-ink-3">{String(i + 1).padStart(2, "0")}</span>
-                {t}
-              </dt>
-              <dd className="mt-2 pl-9 text-[15.5px] leading-relaxed text-ink-2">{b}</dd>
-            </div>
-          ))}
-        </dl>
+      <Section tone="gray">
+        <SectionHead eyebrow="Criteria" title="What the enterprise fund looks for" />
+        <div className="mt-12">
+          <InfoCards cols={3} items={CRITERIA.map(([title, body]) => ({ title, body }))} />
+        </div>
       </Section>
 
       <CtaBand
-        title="Tell us about what you are building"
+        eyebrow="Get in touch"
+        title="Tell us about your company"
         body={`Send a short note to ${BRAND.xHandle} on X: the product, the corridor or asset, and where you are today. We read every message.`}
         actions={
           <>
-            <ButtonLink href={BRAND.x} variant="fog">
-              Message us on X
-            </ButtonLink>
-            <ButtonLink href="/grants" variant="line" className="border-fog/30 text-fog hover:border-fog">
-              Grants instead
+            <ButtonLink href={BRAND.x}>Message us on X</ButtonLink>
+            <ButtonLink href="/grants" variant="line">
+              Builder grants instead
             </ButtonLink>
           </>
         }

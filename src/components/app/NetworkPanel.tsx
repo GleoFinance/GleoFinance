@@ -12,7 +12,7 @@ export function NetworkPanel() {
   const [payments, setPayments] = useState("1000");
   const n = Math.max(0, Math.min(10_000_000, Number(payments.replace(/[^0-9]/g, "")) || 0));
   return (
-    <div className="space-y-14">
+    <div className="space-y-16">
       <LiveFigures withLink={false} />
 
       <Figures
@@ -26,7 +26,7 @@ export function NetworkPanel() {
 
       <div className="grid grid-cols-1 gap-10 lg:grid-cols-2">
         <div className="min-w-0">
-          <h2 className="font-display text-2xl font-semibold">Latest blocks</h2>
+          <h2 className="font-display text-[28px] leading-[1.2] tracking-[-0.02em]">Latest Robinhood Chain blocks</h2>
           <table className="mt-4 w-full text-left text-[14px]">
             <thead className="label">
               <tr className="border-b border-line-2">
@@ -58,8 +58,8 @@ export function NetworkPanel() {
           </table>
         </div>
         <div className="min-w-0">
-          <h2 className="font-display text-2xl font-semibold">What would a payroll cost?</h2>
-          <p className="mt-2 text-[15px] text-ink-2">Network fees for sending USDG to many people, priced at this moment. Fees move with gas and ETH prices.</p>
+          <h2 className="font-display text-[28px] leading-[1.2] tracking-[-0.02em]">Payroll fee calculator</h2>
+          <p className="mt-2 text-[15px] text-ink-2">What it costs in network fees to pay many people in USDG, priced at this moment. The total moves with gas and the ETH price.</p>
           <label htmlFor="payroll" className="label mt-5 block">
             Number of USDG payments
           </label>
@@ -93,9 +93,9 @@ function NetworkDetails() {
   ];
   return (
     <div>
-      <h2 className="font-display text-2xl font-semibold">Add the network by hand</h2>
-      <p className="mt-2 max-w-2xl text-[15px] text-ink-2">Connecting through Gleo adds it for you. If your wallet asks for the details instead, these are the values.</p>
-      <dl className="mt-4 divide-y divide-line-2 rounded-2xl border border-line-2 bg-card">
+      <h2 className="font-display text-[28px] leading-[1.2] tracking-[-0.02em]">Add Robinhood Chain to a wallet by hand</h2>
+      <p className="mt-2 max-w-2xl text-[15px] text-ink-2">Connecting through Gleo adds the network for you. If your wallet asks you to type the details instead, use these values.</p>
+      <dl className="mt-6 divide-y divide-line border border-line bg-paper">
         {rows.map(([k, v]) => (
           <div key={k} className="grid grid-cols-1 gap-1 px-4 py-3 sm:grid-cols-[160px_minmax(0,1fr)_auto] sm:items-center sm:gap-4">
             <dt className="text-sm text-ink-3">{k}</dt>
@@ -112,7 +112,7 @@ function NetworkDetails() {
                     // value stays visible to copy by hand
                   }
                 }}
-                className="inline-flex cursor-pointer items-center gap-1 text-[13px] font-semibold text-sea-deep"
+                className="inline-flex cursor-pointer items-center gap-1 text-[13px] font-semibold text-ink underline-offset-4 hover:underline"
               >
                 {copied === k ? <Check className="size-3.5" /> : <Copy className="size-3.5" />} {copied === k ? "Copied" : "Copy"}
               </button>

@@ -147,7 +147,7 @@ function Pools() {
             {POOLS.map((s) => {
               const p = pools[s];
               return (
-                <tr key={s} className={`cursor-pointer border-b border-line ${s === sym ? "bg-card" : ""}`} onClick={() => setSym(s)}>
+                <tr key={s} className={`cursor-pointer border-b border-line ${s === sym ? "bg-sea-soft" : ""}`} onClick={() => setSym(s)}>
                   <td className="py-2.5 font-mono font-semibold">USDG/{s}</td>
                   <td className="py-2.5 text-right font-mono">{prices[s] ? `$${fmt(prices[s], 2)}` : ready ? "no price" : "…"}</td>
                   <td className="py-2.5 text-right font-mono">{p ? `$${fmt(p.usdg / p.asset, 2)}` : "—"}</td>
@@ -162,7 +162,7 @@ function Pools() {
 
       <div className="grid grid-cols-1 gap-8 xl:grid-cols-[minmax(0,420px)_minmax(0,1fr)]">
         <form
-          className="min-w-0 space-y-4 rounded-2xl border border-line-2 bg-card p-5"
+          className="min-w-0 space-y-4 border border-line bg-paper p-5"
           onSubmit={(e) => {
             e.preventDefault();
             submit();
@@ -176,7 +176,7 @@ function Pools() {
                 </option>
               ))}
             </select>
-            <div className="flex gap-1 rounded-full bg-paper p-1">
+            <div className="flex gap-1 rounded-full bg-paper-2 p-1">
               {(["Swap", "Add", "Remove"] as const).map((m) => (
                 <button key={m} type="button" aria-pressed={mode === m} onClick={() => setMode(m)} className={`cursor-pointer rounded-full px-3 py-1.5 text-[13px] font-semibold ${mode === m ? "bg-ink text-fog" : "text-ink-2"}`}>
                   {m}
@@ -197,7 +197,7 @@ function Pools() {
             </div>
             <input id="pool-amount" inputMode="decimal" className="field mt-1.5 font-mono text-lg" value={amount} onChange={(e) => setAmount(cleanDecimal(e.target.value))} placeholder={mode === "Remove" ? "50" : "1000"} />
           </div>
-          <div className="rounded-xl bg-paper px-4 py-3 text-[14px]">
+          <div className="bg-paper-2 px-4 py-3 text-[14px]">
             <p className="text-ink-2">{mode === "Swap" ? "You receive" : mode === "Add" ? "Result" : "You receive"}</p>
             <p className="mt-0.5 font-mono font-semibold break-all">{preview?.text ?? "—"}</p>
             {preview && mode === "Swap" ? <p className={`mt-1 text-[12.5px] ${preview.impact > 2 ? "text-down" : "text-ink-3"}`}>Price impact {fmt(preview.impact, 2)}% · fee 0.30%</p> : null}
@@ -208,7 +208,7 @@ function Pools() {
           <Feedback error={act.error} done={act.done} />
         </form>
         <div className="min-w-0 text-[14.5px] leading-relaxed text-ink-2">
-          <h3 className="font-display text-xl font-semibold text-ink">How the pool prices a trade</h3>
+          <h3 className="font-display text-[24px] leading-[1.2] tracking-[-0.02em] text-ink">How the pool prices a trade</h3>
           <p className="mt-2">
             A pool holds two reserves and keeps their product constant. Buying the asset adds USDG and removes the asset, so each extra unit costs a little
             more. That is price impact, and it is why deep pools matter for tokenized stocks.
@@ -220,7 +220,7 @@ function Pools() {
         </div>
       </div>
       <div>
-        <h2 className="font-display text-2xl font-semibold">Signed receipts</h2>
+        <h2 className="font-display text-[28px] leading-[1.2] tracking-[-0.02em]">Signed receipts</h2>
         <div className="mt-4">
           <ReceiptLog receipts={receipts} onClear={clear} describe={(r) => `${r.details.Action} · ${r.details.Pool}${r.details["You pay"] ? ` · ${r.details["You pay"]}` : ""}`} />
         </div>

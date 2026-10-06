@@ -1,21 +1,41 @@
-import Link from "next/link";
-import { Container } from "@/components/ui";
+import type { Metadata } from "next";
+import { ButtonLink, Container, Eyebrow, TextLink } from "@/components/ui";
+
+export const metadata: Metadata = {
+  title: { absolute: "Page not found — Gleo" },
+  robots: { index: false, follow: true },
+};
+
+const LINKS: [string, string][] = [
+  ["/send", "Send a USDG payment"],
+  ["/network", "Live Robinhood Chain readings"],
+  ["/use-cases", "What Gleo is used for"],
+  ["/developers", "Developer hub"],
+  ["/faq", "Gleo FAQ"],
+];
 
 export default function NotFound() {
   return (
-    <section className="meridians bg-paper">
-      <Container className="py-24 sm:py-32">
-        <p className="font-mono text-sm text-ink-3">404</p>
-        <h1 className="mt-3 max-w-2xl font-display text-[clamp(2.4rem,6vw,4.5rem)] leading-none font-bold tracking-[-0.03em]">This route does not settle anywhere.</h1>
-        <p className="mt-5 max-w-xl text-[17px] text-ink-2">The page moved or never existed. Try the home page or the app.</p>
-        <div className="mt-8 flex flex-wrap gap-3">
-          <Link href="/" className="btn btn-ink h-11 px-5">
-            Home
-          </Link>
-          <Link href="/app" className="btn btn-line h-11 px-5">
-            Open the app
-          </Link>
+    <section className="bg-paper">
+      <Container className="grid grid-cols-1 gap-12 py-20 lg:grid-cols-2 lg:py-28">
+        <div className="min-w-0">
+          <Eyebrow>Error 404</Eyebrow>
+          <h1 className="t-h1 text-balance">This page could not be found</h1>
+          <p className="t-lead mt-8 max-w-[560px] text-ink-2">The address may have changed, or the page never existed. These links lead somewhere useful.</p>
+          <div className="mt-8 flex flex-wrap gap-3">
+            <ButtonLink href="/">Back to the home page</ButtonLink>
+            <ButtonLink href="/app" variant="line">
+              Open the app
+            </ButtonLink>
+          </div>
         </div>
+        <ul className="min-w-0 space-y-4 lg:pt-12">
+          {LINKS.map(([href, label]) => (
+            <li key={href} className="border-t border-line pt-4">
+              <TextLink href={href}>{label}</TextLink>
+            </li>
+          ))}
+        </ul>
       </Container>
     </section>
   );

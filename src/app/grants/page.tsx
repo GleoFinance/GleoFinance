@@ -1,51 +1,78 @@
-import type { Metadata } from "next";
 import { BRAND } from "@/config/brand";
-import { ButtonLink, CtaBand, Faq, PageHero, Rows, Section, SectionHead, Split, Tag } from "@/components/ui";
+import { faqLd, pageMeta } from "@/lib/seo";
+import { JsonLd } from "@/components/JsonLd";
+import { ButtonLink, CtaBand, Faq, InfoCards, PageHero, Section, SectionHead, Split, Tag } from "@/components/ui";
 
-export const metadata: Metadata = {
-  title: "Grants and funding",
-  description: "Builder grants, a bug bounty, matching support, research and marketing grants, and an enterprise fund for teams building on Gleo.",
-};
+export const metadata = pageMeta({
+  path: "/grants",
+  title: "Builder Grants and Funding for Robinhood Chain",
+  description:
+    "Milestone-based builder grants, a bug bounty, research and matching support for teams building payments and tokenization on Robinhood Chain. See each program.",
+  keywords: ["builder grants", "crypto grants", "Robinhood Chain funding", "open-source grants", "bug bounty"],
+});
+
+const FAQ = [
+  { q: "Can I apply for a Gleo grant now?", a: "Not yet. Each round is announced on X with its budget, rules and form. Security reports are the exception and are welcome today." },
+  { q: "Are grants paid in $GLEO?", a: "Each round states the asset it pays in. Builders usually prefer USDG, and that is the default we plan around." },
+  { q: "Does my project have to be open source?", a: "For builder and research grants, yes. Matching and enterprise support can cover closed products." },
+];
 
 export default function GrantsPage() {
   return (
     <>
       <PageHero
-        title="Grow with grants and funding"
-        lead="Gleo is only as useful as the wallets, ramps and tools around it. These programs exist to pay for that work. None of them is open yet; each opens with an announcement on X."
+        tone="gray"
+        eyebrow="Grants and funding"
+        title="Builder grants and funding for Gleo"
+        lead={
+          <p>
+            Gleo is only as useful as the wallets, ramps and tools built around it, and these builder grants and funding programs exist to pay for
+            that work on Robinhood Chain. Apart from the bug bounty, none is open yet; each one opens with an announcement on X.
+          </p>
+        }
         art="grant"
         meta={<Tag tone="plan">Programs open in rounds</Tag>}
-        actions={
-          <ButtonLink href={BRAND.x} variant="accent">
-            Get notified on X
-          </ButtonLink>
-        }
+        actions={<ButtonLink href={BRAND.x}>Get round dates on X</ButtonLink>}
       />
 
-      <Section tone="card">
-        <Split art="people" title="Builder grants, decided in the open">
+      <Section>
+        <Split eyebrow="Main program" art="people" title="Builder grants paid in milestones">
           <p>
-            The main program funds open-source work in milestones: a first payment when the plan is agreed, the rest as each milestone ships and can
-            be checked by anyone. Reviews and results will be published.
+            The main program funds open-source work in stages: a first payment once the plan is agreed, the rest as each milestone ships and can be
+            checked by anyone. Reviews and outcomes will be published.
           </p>
-          <p>Wallet integrations, anchor tooling, payment SDKs and asset dashboards come first, because they make every other project easier.</p>
+          <p>
+            Wallet integrations, anchor tooling, payment libraries and asset dashboards come first, because they make every other project easier
+            to build.
+          </p>
           <div className="pt-2">
             <Tag tone="plan">First round: after Gleo Contracts deploy</Tag>
           </div>
         </Split>
       </Section>
 
-      <Section>
-        <SectionHead title="Every program at a glance" lead="Amounts are set per round and published with it. Nothing below promises a figure until that round opens." />
-        <div className="mt-10">
-          <Rows
+      <Section tone="sand">
+        <Split eyebrow="Open now" art="shield" title="Bug bounty for security researchers" reverse>
+          <p>
+            Found a way to hurt Gleo users? Tell us privately first and we will pay for it. Reports on this website are accepted today, and Gleo
+            Contracts join the scope on the day their addresses are published.
+          </p>
+          <div className="pt-2">
+            <ButtonLink href="/grants/bug-bounty">Read the bug bounty rules</ButtonLink>
+          </div>
+        </Split>
+      </Section>
+
+      <Section tone="gray">
+        <SectionHead
+          eyebrow="Every program"
+          title="Funding programs at a glance"
+          lead="Amounts are set per round and published with it. Nothing on this page promises a figure before that round opens."
+        />
+        <div className="mt-12">
+          <InfoCards
+            cols={3}
             items={[
-              {
-                title: "Bug bounty",
-                meta: <Tag tone="live">Reports accepted now</Tag>,
-                body: "Rewards for finding security problems in this website today and in Gleo Contracts once they deploy. Severity decides the reward.",
-                href: "/grants/bug-bounty",
-              },
               {
                 title: "Matching fund",
                 meta: <Tag tone="plan" />,
@@ -59,7 +86,7 @@ export default function GrantsPage() {
               {
                 title: "Marketing grants",
                 meta: <Tag tone="plan" />,
-                body: "Support for launches, guides and local communities that bring new people to tools built on Gleo, paid against agreed deliverables.",
+                body: "Support for launches, guides and local groups that bring new people to tools built on Gleo, paid against agreed deliverables.",
               },
             ]}
           />
@@ -69,36 +96,37 @@ export default function GrantsPage() {
       <Section tone="night">
         <SectionHead
           dark
-          title="More funding sources"
-          lead="Companies taking payments or issuance into production need more than a grant. The enterprise fund is built for them."
+          split
+          eyebrow="Companies"
+          title="Larger backing for payment companies"
+          lead="Firms taking payments or issuance into production need more than a grant. The Gleo enterprise fund is set up for them."
           action={
             <ButtonLink href="/enterprise-fund" variant="fog">
-              Enterprise fund
+              Read about the enterprise fund
             </ButtonLink>
           }
         />
       </Section>
 
       <Section>
-        <SectionHead title="Questions" />
-        <div className="mt-8">
-          <Faq
-            items={[
-              { q: "Can I apply now?", a: "Not yet. Rounds are announced on X with the amount, the rules and the form. Bug reports are the exception and are welcome now." },
-              { q: "Is grant money paid in $GLEO?", a: "Each round says which asset it pays in. Builders usually prefer USDG, and that is the default we plan for." },
-              { q: "Do I have to open-source my work?", a: "For builder and research grants, yes. Matching and enterprise support can cover closed products." },
-            ]}
-          />
+        <JsonLd data={faqLd(FAQ)} />
+        <SectionHead eyebrow="FAQs" title="Questions about Gleo grants" />
+        <div className="mt-10">
+          <Faq items={FAQ} />
         </div>
       </Section>
 
       <CtaBand
-        title="Start now, apply when the round opens"
-        body="The best applications point at something that already works. The chain, USDG and the stock tokens are live today."
+        eyebrow="Get ready"
+        title="Build now, apply when the round opens"
+        body="The strongest applications point at something that already works. The chain, USDG and the stock tokens are live today."
         actions={
-          <ButtonLink href="/developers" variant="fog">
-            Developer hub
-          </ButtonLink>
+          <>
+            <ButtonLink href="/developers">Open the developer hub</ButtonLink>
+            <ButtonLink href="/smart-contracts" variant="line">
+              Smart contract quick start
+            </ButtonLink>
+          </>
         }
       />
     </>

@@ -12,6 +12,7 @@ import Link from "next/link";
 import { createPortal } from "react-dom";
 import {
   ArrowLeftRight,
+  ArrowUpRight,
   Check,
   ChevronDown,
   Copy,
@@ -57,7 +58,7 @@ function WalletIcon({ src }: { src: string | null }) {
   return src ? (
     <img src={src} alt="" width={28} height={28} className="size-7 shrink-0 rounded-lg" />
   ) : (
-    <Wallet className="size-7 shrink-0 rounded-lg bg-sea p-1 text-white" />
+    <Wallet className="size-7 shrink-0 rounded-lg bg-sea p-1 text-ink" />
   );
 }
 
@@ -102,8 +103,8 @@ function WalletDialog({ onClose }: { onClose: () => void }) {
   }
 
   const row =
-    "flex w-full items-center gap-3 rounded-md border border-line-2 bg-paper px-3.5 py-3 text-left text-[15px] font-semibold";
-  const heading = "px-1 pb-2 font-mono text-[10px] tracking-[0.2em] text-ink-3 uppercase";
+    "flex w-full items-center gap-3 border border-line-2 bg-paper px-4 py-3 text-left text-[15px] font-semibold";
+  const heading = "label px-1 pb-2";
 
   // The header blurs what is behind it, and a backdrop filter turns it into
   // the containing block for fixed children. Rendered in place, the dialog
@@ -116,27 +117,27 @@ function WalletDialog({ onClose }: { onClose: () => void }) {
       className="fixed inset-0 z-[70] flex items-end justify-center sm:items-center sm:p-4"
     >
       <div className="absolute inset-0 bg-night/70" onClick={close} />
-      <div className="relative flex max-h-[92dvh] w-full max-w-sm flex-col overflow-hidden rounded-t-2xl border border-line-2 bg-card sm:rounded-2xl">
-        <div className="flex items-center justify-between border-b border-line px-5 py-4">
-          <h2 id="wallet-dialog-title" className="font-display text-2xl font-bold tracking-tight text-ink">
+      <div className="relative flex max-h-[92dvh] w-full max-w-[420px] flex-col overflow-hidden border border-line bg-paper">
+        <div className="flex items-center justify-between border-b border-line px-6 py-5">
+          <h2 id="wallet-dialog-title" className="font-display text-[28px] leading-none tracking-[-0.02em] text-ink">
             Connect wallet
           </h2>
           <button
             type="button"
             aria-label="Close"
             onClick={close}
-            className="cursor-pointer p-1 text-ink-3 transition-colors hover:text-ink"
+            className="flex size-9 cursor-pointer items-center justify-center rounded-full border border-ink text-ink transition-colors hover:bg-paper-2"
           >
             <X className="size-4" />
           </button>
         </div>
 
-        <p className="px-5 pt-4 font-mono text-[11px] leading-relaxed text-ink-2">
+        <p className="px-6 pt-5 text-[14px] leading-relaxed text-ink-2">
           Any EVM wallet that can add a custom network works on {chain.name}. Connecting only shares your address;
           signatures and swaps are asked for separately.
         </p>
 
-        <div className="min-h-0 flex-1 overflow-y-auto px-4 pt-4 pb-2">
+        <div className="min-h-0 flex-1 overflow-y-auto px-5 pt-5 pb-3">
           {installed.length ? (
             <>
               <p className={heading}>Detected in this browser</p>
@@ -152,12 +153,12 @@ function WalletDialog({ onClose }: { onClose: () => void }) {
                       <WalletIcon src={wallet.icon || catalogIcon(wallet.rdns)} />
                       <span className="min-w-0 flex-1">
                         <span className="block">{wallet.name}</span>
-                        <span className="block text-[10px] text-ink-3">
+                        <span className="block text-[12px] font-normal text-ink-3">
                           {wallet.unsupported ? `Not supported · ${wallet.unsupported}` : "Installed"}
                         </span>
                       </span>
                       {pending === wallet.rdns ? (
-                        <span className="text-[10px] tracking-widest text-ink-3 uppercase">Check wallet</span>
+                        <span className="text-[12px] font-normal text-ink-3">Check wallet</span>
                       ) : null}
                     </button>
                   </li>
@@ -178,10 +179,10 @@ function WalletDialog({ onClose }: { onClose: () => void }) {
               <WalletIcon src="/wallets/walletconnect.webp" />
               <span className="min-w-0 flex-1">
                 <span className="block">WalletConnect</span>
-                <span className="block text-[10px] text-ink-3">Scan a QR code with a mobile wallet</span>
+                <span className="block text-[12px] font-normal text-ink-3">Scan a QR code with a mobile wallet</span>
               </span>
               {pending === WALLETCONNECT_RDNS ? (
-                <span className="text-[10px] tracking-widest text-ink-3 uppercase">Opening</span>
+                <span className="text-[12px] font-normal text-ink-3">Opening</span>
               ) : null}
             </button>
           ) : (
@@ -189,7 +190,7 @@ function WalletDialog({ onClose }: { onClose: () => void }) {
               <WalletIcon src="/wallets/walletconnect.webp" />
               <span className="min-w-0 flex-1">
                 <span className="block">WalletConnect</span>
-                <span className="block text-[10px] text-ink-3">Not configured on this site yet</span>
+                <span className="block text-[12px] font-normal text-ink-3">Not configured on this site yet</span>
               </span>
             </div>
           )}
@@ -213,7 +214,7 @@ function WalletDialog({ onClose }: { onClose: () => void }) {
                       >
                         <WalletIcon src={`/wallets/${w.id}.webp`} />
                         <span className="min-w-0 flex-1">{w.name}</span>
-                        <span className="inline-flex items-center gap-1 text-[10px] tracking-widest text-up uppercase">
+                        <span className="inline-flex items-center gap-1 text-[12px] font-semibold text-ink underline underline-offset-4">
                           {label} <ExternalLink className="size-3" />
                         </span>
                       </a>
@@ -226,13 +227,13 @@ function WalletDialog({ onClose }: { onClose: () => void }) {
         </div>
 
         {error ? (
-          <p className="flex items-start gap-2 border-t border-line px-5 py-3 font-mono text-[11px] leading-relaxed text-down">
+          <p className="flex items-start gap-2 border-t border-line px-6 py-3 text-[13px] leading-relaxed text-down">
             <TriangleAlert className="mt-0.5 size-3.5 shrink-0" />
             <span>{error}</span>
           </p>
         ) : null}
 
-        <p className="border-t border-line px-5 py-3 font-mono text-[10px] tracking-[0.15em] text-ink-3 uppercase">
+        <p className="border-t border-line bg-paper-2 px-6 py-3 text-[12px] text-ink-3">
           {chain.name} · chain id {chain.id} · added to your wallet on connect
         </p>
       </div>
@@ -250,12 +251,11 @@ export function NavWallet({ compact = false }: { compact?: boolean }) {
   const { open } = useWalletModal();
   if (address) return <AccountMenu compact={compact} />;
   return (
-    <button
-      type="button"
-      onClick={open}
-      className={`btn btn-ink whitespace-nowrap ${compact ? "h-9 px-3 text-[13px]" : "h-9 px-4 text-sm"}`}
-    >
+    <button type="button" onClick={open} className={`pill pill-ink ${compact ? "h-10 gap-2 pl-4 text-[14px]" : ""}`}>
       {compact ? "Connect" : "Connect wallet"}
+      <span className={`pill-disc ${compact ? "size-7" : ""}`}>
+        <ArrowUpRight className="size-4" />
+      </span>
     </button>
   );
 }
@@ -318,7 +318,7 @@ function AccountMenu({ compact }: { compact: boolean }) {
           onClick={switchNetwork}
           disabled={switching}
           title={`Wallet is on chain ${chainId}. Switch to ${chain.name}.`}
-          className="flex h-9 cursor-pointer items-center gap-1.5 rounded-md border border-down bg-down-soft px-3 font-mono text-[10px] font-semibold tracking-[0.1em] text-down uppercase transition-colors hover:bg-down-soft disabled:opacity-60"
+          className="flex h-10 cursor-pointer items-center gap-1.5 rounded-full border border-down bg-down-soft px-4 text-[12px] font-semibold text-down transition-colors hover:bg-down-soft disabled:opacity-60"
         >
           <TriangleAlert className="size-3.5" />
           {switching ? "Confirm…" : compact ? `Chain ${chainId}` : `Wrong network · ${chainId}`}
@@ -329,7 +329,7 @@ function AccountMenu({ compact }: { compact: boolean }) {
         aria-haspopup="menu"
         aria-expanded={open}
         onClick={() => setOpen((value) => !value)}
-        className="flex h-9 cursor-pointer items-center gap-2 rounded-md border border-line-2 bg-card px-2.5 font-mono text-[12px] font-medium text-ink transition-colors hover:border-ink"
+        className="flex h-10 cursor-pointer items-center gap-2 rounded-full border border-transparent bg-[#f9f9f9] px-4 font-mono text-[12px] font-medium text-ink transition-colors hover:border-ink lg:h-11"
       >
         <span className={`size-1.5 rounded-full ${onRobinhoodChain ? "bg-up" : "bg-down"}`} />
         <span>{shortAddress(address, compact ? 4 : 6, 4)}</span>
@@ -345,15 +345,15 @@ function AccountMenu({ compact }: { compact: boolean }) {
               ref={menu}
               role="menu"
               style={{ position: "fixed", top: place.top, left: place.left }}
-              className="z-[80] w-[272px] overflow-hidden rounded-lg border border-line-2 bg-card font-mono shadow-lg"
+              className="z-[80] w-[272px] overflow-hidden border border-line bg-paper shadow-[0_20px_50px_-24px_rgba(15,15,15,0.4)]"
             >
               <div className="border-b border-line px-4 py-3">
-                <p className="text-[10px] tracking-[0.2em] text-ink-3 uppercase">{walletName ?? "Wallet"}</p>
-                <p className="mt-1 text-xs text-ink">{shortAddress(address, 10, 8)}</p>
-                <p className="mt-2 text-sm text-up">
+                <p className="label">{walletName ?? "Wallet"}</p>
+                <p className="mt-1 font-mono text-xs text-ink">{shortAddress(address, 10, 8)}</p>
+                <p className="mt-2 font-mono text-sm text-up">
                   {balance === null ? "…" : `${balance} ${chain.nativeSymbol}`}
                 </p>
-                <p className={`mt-1 text-[10px] tracking-wider ${wrongNetwork ? "text-down" : "text-ink-3"}`}>
+                <p className={`mt-1 text-[12px] ${wrongNetwork ? "text-down" : "text-ink-3"}`}>
                   {chainId === null
                     ? "Reading network…"
                     : onRobinhoodChain
@@ -369,15 +369,15 @@ function AccountMenu({ compact }: { compact: boolean }) {
                     role="menuitem"
                     disabled={switching}
                     onClick={switchNetwork}
-                    className="btn btn-accent w-full justify-center px-3 py-2 text-[10px] disabled:opacity-60"
+                    className="btn btn-accent h-10 w-full justify-center px-3 text-[13px] disabled:opacity-60"
                   >
                     {switching ? "Confirm in wallet…" : `Switch to ${chain.name}`}
                   </button>
-                  {error ? <p className="mt-2 px-1 text-[10px] leading-relaxed text-down">{error}</p> : null}
+                  {error ? <p className="mt-2 px-1 text-[12px] leading-relaxed text-down">{error}</p> : null}
                 </div>
               ) : null}
 
-              <div className="flex flex-col p-1.5 text-[11px]">
+              <div className="flex flex-col p-1.5 text-[14px]">
                 <button
                   type="button"
                   role="menuitem"
@@ -390,7 +390,7 @@ function AccountMenu({ compact }: { compact: boolean }) {
                       // Clipboard refused; the address above stays readable.
                     }
                   }}
-                  className="flex cursor-pointer items-center gap-2.5 px-2.5 py-2 text-left text-ink-2 transition-colors hover:bg-sea-soft hover:text-ink"
+                  className="flex cursor-pointer items-center gap-2.5 px-2.5 py-2 text-left text-ink-2 transition-colors hover:bg-paper-2 hover:text-ink"
                 >
                   {copied ? <Check className="size-3.5 text-up" /> : <Copy className="size-3.5" />}
                   {copied ? "Copied" : "Copy address"}
@@ -399,7 +399,7 @@ function AccountMenu({ compact }: { compact: boolean }) {
                   role="menuitem"
                   href="/app"
                   onClick={() => setOpen(false)}
-                  className="flex items-center gap-2.5 px-2.5 py-2 text-ink-2 transition-colors hover:bg-sea-soft hover:text-ink"
+                  className="flex items-center gap-2.5 px-2.5 py-2 text-ink-2 transition-colors hover:bg-paper-2 hover:text-ink"
                 >
                   <LayoutList className="size-3.5" />
                   Open app
@@ -408,7 +408,7 @@ function AccountMenu({ compact }: { compact: boolean }) {
                   role="menuitem"
                   href="/send"
                   onClick={() => setOpen(false)}
-                  className="flex items-center gap-2.5 px-2.5 py-2 text-ink-2 transition-colors hover:bg-sea-soft hover:text-ink"
+                  className="flex items-center gap-2.5 px-2.5 py-2 text-ink-2 transition-colors hover:bg-paper-2 hover:text-ink"
                 >
                   <Send className="size-3.5" />
                   Send a payment
@@ -417,7 +417,7 @@ function AccountMenu({ compact }: { compact: boolean }) {
                   role="menuitem"
                   href="/swap"
                   onClick={() => setOpen(false)}
-                  className="flex items-center gap-2.5 px-2.5 py-2 text-ink-2 transition-colors hover:bg-sea-soft hover:text-ink"
+                  className="flex items-center gap-2.5 px-2.5 py-2 text-ink-2 transition-colors hover:bg-paper-2 hover:text-ink"
                 >
                   <ArrowLeftRight className="size-3.5" />
                   Swap {BRAND.symbol}
@@ -427,7 +427,7 @@ function AccountMenu({ compact }: { compact: boolean }) {
                   href={explorerAddress(address)}
                   target="_blank"
                   rel="noreferrer"
-                  className="flex items-center gap-2.5 px-2.5 py-2 text-ink-2 transition-colors hover:bg-sea-soft hover:text-ink"
+                  className="flex items-center gap-2.5 px-2.5 py-2 text-ink-2 transition-colors hover:bg-paper-2 hover:text-ink"
                 >
                   <ExternalLink className="size-3.5" />
                   View on explorer

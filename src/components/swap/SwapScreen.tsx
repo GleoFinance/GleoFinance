@@ -204,21 +204,24 @@ export function SwapScreen() {
   const sendBalance = show(sendBalanceRaw);
   const receiveBalance = show(buying ? balances.token : balances.eth);
   const ring = (id: string) =>
-    step !== null && TOUR[step].target === id ? "ring-2 ring-sea ring-offset-2 ring-offset-card" : "";
+    step !== null && TOUR[step].target === id ? "ring-2 ring-ink ring-offset-2 ring-offset-paper" : "";
 
   return (
     <div className="relative">
-      <div className="mx-auto grid max-w-[1280px] grid-cols-1 gap-8 px-4 pt-8 pb-12 sm:px-6 lg:grid-cols-[1fr_440px] lg:gap-12">
+      <div className="mx-auto grid max-w-[1440px] grid-cols-1 gap-10 px-[var(--gutter)] py-14 lg:grid-cols-[minmax(0,1fr)_440px] lg:gap-16 lg:py-20">
         <div className="min-w-0 lg:pt-4">
-          <p className="label">{BRAND.symbol} · {CHAIN.name}</p>
-          <h1 className="font-display font-bold tracking-tight leading-none mt-3 text-[54px] sm:text-[72px]">Swap {BRAND.ticker}</h1>
-          <p className="mt-3 max-w-md text-[17px] text-ink-2">
-            Trade ETH for {BRAND.symbol} on {CHAIN.name}. Quotes and swaps go straight to the chain from your own wallet.
+          <p className="t-eyebrow mb-4">Token swap · {CHAIN.name}</p>
+          <h1 className="t-h1 text-balance">
+            Swap {BRAND.symbol} on {CHAIN.name}
+          </h1>
+          <p className="t-lead mt-8 max-w-[560px] text-ink-2">
+            Swap {BRAND.symbol} for ETH, or back again, on {CHAIN.name}. Each quote is read from the chain with launch fees included, and
+            the trade is signed in your own wallet. Gleo never holds your funds.
           </p>
 
-          <div className="rounded-2xl border border-line-2 bg-card mt-7 max-w-md p-5">
+          <div className="mt-10 max-w-[520px] border border-line bg-paper-2 p-6">
             <p className="label">Where it trades</p>
-            <p className="font-display font-bold tracking-tight leading-none mt-2 text-[28px]" data-testid="swap-venue">
+            <p className="mt-3 font-display text-[28px] leading-[1.15] tracking-[-0.02em]" data-testid="swap-venue">
               {!TOKEN.isLive
                 ? "Opens at launch"
                 : marketFailed && !market
@@ -235,7 +238,7 @@ export function SwapScreen() {
             </p>
             {TOKEN.isLive && market?.venue === "curve" ? (
               <div className="mt-3">
-                <div className="flex justify-between font-mono text-[11px] text-ink-2">
+                <div className="flex justify-between text-[12px] text-ink-2">
                   <span>To graduation</span>
                   <span>{Math.round((market.progress ?? 0) * 100)}%</span>
                 </div>
@@ -250,7 +253,7 @@ export function SwapScreen() {
                 : `Swaps open the moment the contract is published. Until then this page connects your wallet, moves it to ${CHAIN.name} and shows your real ETH balance.`}
             </p>
             <dl className="mt-4 grid grid-cols-3 gap-3 border-t border-line pt-4 text-xs" id="swap-stats">
-              <div className={`rounded-md ${ring("swap-stats")}`}>
+              <div className={ring("swap-stats")}>
                 <dt className="text-ink-3">Network</dt>
                 <dd className="mt-0.5 font-semibold">{CHAIN.name}</dd>
                 <dd className="text-ink-3">chain id {CHAIN.id}</dd>
@@ -277,29 +280,29 @@ export function SwapScreen() {
               href={CHAIN.explorer}
               target="_blank"
               rel="noreferrer"
-              className="mt-4 flex items-center gap-2 font-mono text-[11px] tracking-[0.06em] text-up uppercase hover:underline"
+              className="mt-4 flex items-center gap-2 text-[11px] font-semibold tracking-[0.02em] text-up uppercase hover:underline"
             >
               Explore {CHAIN.name} on Blockscout <ArrowUpRight className="size-3.5" />
             </a>
           </div>
 
-          <button type="button" onClick={() => setStep(0)} className="btn btn-line mt-5 h-10 px-4 text-sm">
+          <button type="button" onClick={() => setStep(0)} className="btn btn-line mt-6 h-11 px-5 text-[15px]">
             Show me around
           </button>
         </div>
 
         <div className="relative w-full">
-          <div className="rounded-2xl border border-line-2 bg-card p-4 sm:p-5">
-            <div id="swap-head" className={`flex items-center justify-between gap-2 rounded-lg ${ring("swap-head")}`}>
-              <h2 className="font-display font-bold tracking-tight leading-none text-[28px]">Swap</h2>
-              <span className="flex items-center gap-1 font-mono text-[11px]">
+          <div className="border border-line bg-paper p-5 sm:p-6">
+            <div id="swap-head" className={`flex items-center justify-between gap-2 ${ring("swap-head")}`}>
+              <h2 className="font-display text-[28px] leading-none tracking-[-0.02em]">Swap</h2>
+              <span className="flex items-center gap-1 text-[12px]">
                 <span className="text-ink-3">Slippage</span>
                 {SLIPPAGES.map((bps) => (
                   <button
                     key={bps}
                     type="button"
                     onClick={() => setSlippage(bps)}
-                    className={`cursor-pointer rounded border px-1.5 py-0.5 font-semibold ${slippage === bps ? "border-ink bg-ink text-fog" : "border-transparent text-ink-2 hover:border-line-2"}`}
+                    className={`cursor-pointer rounded-full border px-2 py-0.5 font-semibold ${slippage === bps ? "border-ink bg-ink text-fog" : "border-transparent text-ink-2 hover:border-line-2"}`}
                   >
                     {bps / 100}%
                   </button>
@@ -307,8 +310,8 @@ export function SwapScreen() {
               </span>
             </div>
 
-            <div id="swap-send" className={`mt-4 rounded-xl ${ring("swap-send")}`}>
-              <div className="rounded-md border border-line-2 bg-paper px-4 pt-2.5 pb-3">
+            <div id="swap-send" className={`mt-4 ${ring("swap-send")}`}>
+              <div className="border border-line-2 bg-paper px-4 pt-3 pb-3">
                 <div className="flex justify-between text-xs font-semibold text-ink-2">
                   <span>You pay</span>
                   <span className="flex gap-2">
@@ -344,14 +347,14 @@ export function SwapScreen() {
                 type="button"
                 onClick={() => setReverse((v) => !v)}
                 aria-label="Flip direction"
-                className={`flex size-10 cursor-pointer items-center justify-center rounded-md border border-line-2 bg-card transition-transform hover:rotate-180 ${ring("swap-flip")}`}
+                className={`flex size-10 cursor-pointer items-center justify-center rounded-full border border-ink bg-sea transition-transform hover:rotate-180 ${ring("swap-flip")}`}
               >
                 <ArrowDownUp className="size-4" strokeWidth={2.5} />
               </button>
             </div>
 
-            <div id="swap-receive" className={`rounded-xl ${ring("swap-receive")}`}>
-              <div className="rounded-md border border-line-2 bg-paper-2 px-4 pt-2.5 pb-3">
+            <div id="swap-receive" className={`${ring("swap-receive")}`}>
+              <div className="border border-line-2 bg-paper-2 px-4 pt-3 pb-3">
                 <div className="flex justify-between text-xs font-semibold text-ink-2">
                   <span>You get</span>
                   <span>Balance: {receiveBalance ?? "–"}</span>
@@ -374,7 +377,7 @@ export function SwapScreen() {
               </p>
             </div>
 
-            <div id="swap-cta" className={`mt-4 rounded-xl ${ring("swap-cta")}`}>
+            <div id="swap-cta" className={`mt-4 ${ring("swap-cta")}`}>
               {!address ? (
                 <button type="button" onClick={open} className="btn btn-ink h-12 w-full text-base" data-testid="swap-connect">
                   Connect wallet
@@ -416,7 +419,7 @@ export function SwapScreen() {
             </div>
 
             {tradeError ? (
-              <p role="alert" className="mt-3 rounded-lg border border-down bg-down-soft px-3 py-2 text-xs leading-relaxed text-down">
+              <p role="alert" className="mt-3 border border-down bg-down-soft px-3 py-2 text-xs leading-relaxed text-down">
                 {tradeError}
               </p>
             ) : null}
@@ -434,7 +437,7 @@ export function SwapScreen() {
 
             {address ? (
               <div className="mt-4 flex items-center justify-between gap-2 border-t border-line pt-3">
-                <span className="font-mono text-[11px] text-ink-3">Connected wallet</span>
+                <span className="text-[12px] text-ink-3">Connected wallet</span>
                 <NavWallet compact />
               </div>
             ) : null}
@@ -444,11 +447,11 @@ export function SwapScreen() {
             <div
               role="dialog"
               aria-label="Guided tour"
-              className="fixed inset-x-3 bottom-4 z-30 mx-auto max-w-[360px] rounded-lg bg-night p-4 text-sm text-fog shadow-xl md:right-6 md:bottom-6 md:left-auto md:mx-0 md:w-[340px]"
+              className="fixed inset-x-3 bottom-4 z-30 mx-auto max-w-[360px] bg-night p-4 text-sm text-fog shadow-xl md:right-6 md:bottom-6 md:left-auto md:mx-0 md:w-[340px]"
             >
               <p className="leading-relaxed font-medium">{TOUR[step].text}</p>
               <div className="mt-3 flex items-center justify-between">
-                <span className="font-mono text-[11px] font-semibold">
+                <span className="text-[12px] font-semibold tabular-nums">
                   {step + 1} / {TOUR.length}
                 </span>
                 <div className="flex gap-2">
@@ -474,7 +477,7 @@ export function SwapScreen() {
 
 function TokenBadge({ token }: { token: string }) {
   return (
-    <span className="flex shrink-0 items-center gap-1.5 rounded-full border border-line-2 bg-card py-1 pr-3 pl-1 text-sm font-semibold">
+    <span className="flex shrink-0 items-center gap-1.5 rounded-full border border-line-2 bg-paper py-1 pr-3 pl-1 text-sm font-semibold">
       {token === "ETH" ? (
         <svg viewBox="0 0 24 24" className="size-6" aria-hidden="true">
           <circle cx="12" cy="12" r="12" fill="#627eea" />

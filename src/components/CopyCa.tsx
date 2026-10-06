@@ -44,14 +44,14 @@ export function CopyCaTag({ className = "" }: { className?: string }) {
       title={live ? `Copy ${BRAND.ca}` : "The contract address is published at launch"}
       aria-label={live ? `Copy ${BRAND.symbol} contract address` : "Contract address not published yet"}
       data-testid="ca-tag"
-      className={`flex h-9 shrink-0 cursor-pointer items-center gap-2 rounded-full border border-line-2 bg-card pr-1 pl-1 font-mono sm:pr-3 text-[12px] text-ink transition-colors enabled:hover:border-ink disabled:cursor-default ${className}`}
+      className={`flex h-10 shrink-0 cursor-pointer items-center gap-2 rounded-full border border-transparent bg-[#f9f9f9] px-1.5 font-mono text-[12px] text-ink transition-colors enabled:hover:border-ink disabled:cursor-default sm:pr-4 lg:h-11 ${className}`}
     >
-      <span className="rounded-full bg-ink px-2 py-[3px] text-[10.5px] leading-none font-semibold text-fog">
+      <span className="rounded-full bg-sea px-2.5 py-[5px] font-sans text-[11px] leading-none font-semibold text-ink">
         <span className="sm:hidden">CA</span>
         <span className="hidden sm:inline">{BRAND.symbol}</span>
       </span>
       <span className="hidden sm:inline">{!live ? "At launch" : copied ? "Copied" : shortAddress(BRAND.ca, 4, 4)}</span>
-      {!live ? null : copied ? <Check className="size-3.5 text-sea" strokeWidth={3} /> : <Copy className="size-3.5 text-ink-3" />}
+      {!live ? null : copied ? <Check className="size-3.5 text-up" strokeWidth={3} /> : <Copy className="size-3.5 text-ink-3" />}
     </button>
   );
 }
@@ -60,15 +60,21 @@ export function CopyCaTag({ className = "" }: { className?: string }) {
 export function CopyCaBlock({ className = "" }: { className?: string }) {
   const { copied, copy, live } = useCopyCa();
   return (
-    <div className={`rounded-2xl border border-fog/15 bg-night-2 p-5 text-fog ${className}`}>
-      <p className="font-mono text-[11px] tracking-[0.08em] text-fog-2 uppercase">
+    <div className={`border border-fog/25 p-5 text-fog ${className}`}>
+      <p className="text-[12px] font-semibold tracking-[0.02em] text-fog uppercase">
         {BRAND.symbol} contract · {CHAIN.name}
       </p>
       <div className="mt-3 flex flex-wrap items-center gap-3">
-        <code className="min-w-0 flex-1 basis-56 font-mono text-[13px] leading-snug break-all" data-testid="ca-full">
-          {live ? BRAND.ca : "Published at launch. Trust only the address shown here and on our X account."}
-        </code>
-        <button type="button" onClick={copy} disabled={!live} className="btn btn-fog h-10 px-4 text-sm" data-testid="ca-copy">
+        {live ? (
+          <code className="min-w-0 flex-1 basis-56 font-mono text-[13px] leading-snug break-all" data-testid="ca-full">
+            {BRAND.ca}
+          </code>
+        ) : (
+          <p className="min-w-0 flex-1 basis-56 text-[14px] leading-snug text-fog/70" data-testid="ca-full">
+            Published at launch. Trust only the address shown here and on our X account.
+          </p>
+        )}
+        <button type="button" onClick={copy} disabled={!live} className="btn btn-accent h-10 px-4 text-sm" data-testid="ca-copy">
           {copied ? <Check className="size-4" strokeWidth={3} /> : <Copy className="size-4" />}
           {!live ? "At launch" : copied ? "Copied" : "Copy CA"}
         </button>

@@ -1,16 +1,29 @@
-import type { Metadata } from "next";
 import Link from "next/link";
 import { BRAND } from "@/config/brand";
 import { LongForm } from "@/components/ui";
+import { pageMeta } from "@/lib/seo";
 
-export const metadata: Metadata = {
-  title: "Brand policy",
-  description: "How the Gleo name, the $GLEO ticker and the Gleo mark may and may not be used.",
-};
+export const metadata = pageMeta({
+  path: "/brand-policy",
+  title: "Brand Policy: Using the Name, Ticker and Logo",
+  description:
+    "How you may use the Gleo name, the $GLEO ticker and the Gleo logo: what is allowed without asking, what is not, and how to report impersonation or misuse.",
+  keywords: ["brand policy", "logo usage guidelines", "trademark use", "Gleo name", "report impersonation"],
+});
 
 export default function BrandPolicyPage() {
   return (
-    <LongForm title="Brand policy" updated="October 5, 2026" lead="How you may use the Gleo name, the $GLEO ticker and the Gleo mark.">
+    <LongForm
+      eyebrow="Legal"
+      title="Gleo brand policy"
+      updated="October 6, 2026"
+      lead={
+        <p>
+          This Gleo brand policy explains how you may use the Gleo name, the {BRAND.symbol} ticker and the Gleo logo, and how to report anyone
+          pretending to be us.
+        </p>
+      }
+    >
       <h2>Brand assets</h2>
       <p>
         &ldquo;Gleo&rdquo;, &ldquo;{BRAND.symbol}&rdquo; and the Gleo mark (the open globe with a dot) are the brand assets covered here. Official
@@ -40,7 +53,7 @@ export default function BrandPolicyPage() {
       <h2>Guidelines for the name</h2>
       <p>Write &ldquo;Gleo&rdquo; with a capital G. Write the token as &ldquo;{BRAND.symbol}&rdquo; or &ldquo;GLEO&rdquo;. Do not combine the name with other words into a new product name.</p>
       <h2>Guidelines for the mark</h2>
-      <p>Use the files as provided. Keep clear space around the mark, keep its proportions, and do not change its colours beyond the ink and fog versions.</p>
+      <p>Use the files as provided. Keep clear space around the mark, keep its proportions, and do not change its colours beyond the ink and white versions.</p>
       <h2>Permissions and reporting misuse</h2>
       <p>
         For anything not covered here, or to report someone pretending to be Gleo, send a direct message to <a href={BRAND.x}>{BRAND.xHandle}</a> on X.
