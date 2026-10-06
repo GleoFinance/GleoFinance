@@ -20,11 +20,11 @@ export const BRAND = {
   tagline: "Cross-border payments in seconds. Assets tokenized instantly. DeFi reimagined.",
   description:
     "Gleo is a payments, asset tokenization and DeFi network on Robinhood Chain: send dollars across borders in seconds, issue real-world assets as tokens with built-in controls, and put them to work in open markets.",
-  x: "https://x.com/gleo",
-  xHandle: "@gleo",
+  x: "https://x.com/gleofinance",
+  xHandle: "@gleofinance",
   // Public source repository. "https://github.com/" is a placeholder: while it
   // stays like this, the GitHub link is hidden everywhere on the site.
-  github: "https://github.com/",
+  github: "https://github.com/GleoFinance/GleoFinance",
   ca: CA,
 } as const;
 
