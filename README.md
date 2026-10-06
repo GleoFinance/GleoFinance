@@ -57,6 +57,7 @@ npm start            # http://localhost:4880
 | `ROBINHOOD_RPC_URL` | Private RPC for server reads. Falls back to the public RPC. |
 | `NEXT_PUBLIC_ROBINHOOD_RPC_URL` | Private RPC the browser may use as a fallback. Restrict it to your domain. |
 | `NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID` | WalletConnect project id from cloud.reown.com. Without it the option shows "Not configured on this site yet". |
+| `TRUST_PROXY_HEADERS` | Set to `1` only when self-hosting behind your own proxy that overwrites `X-Forwarded-For`. On Vercel it is not needed. Without it, direct traffic shares one rate-limit budget. |
 
 Put them in `.env.local` locally or in your host's environment settings. Nothing is required.
 
@@ -93,7 +94,7 @@ scripts/               resolve-assets.mjs, make-brand.mjs
 ## Security and status
 
 - No custody: transactions are built in the browser and signed by your wallet.
-- The RPC relay forwards read methods only; `eth_getLogs` needs numeric `fromBlock` and `toBlock` with a span of at most 20,000 blocks. API routes cap body size and rate-limit per IP (IPv6 per /64).
+- The RPC relay forwards read methods only; `eth_getLogs` needs numeric `fromBlock` and `toBlock` with a span of at most 20,000 blocks. API routes cap body size and rate-limit per network (IPv6 per /64). Forwarded IP headers are trusted only on Vercel or with `TRUST_PROXY_HEADERS=1`; the in-memory limiter is capped at 10,000 keys and sends newcomers to a small shared overflow budget when full.
 - Practice receipts are kept in the browser only and capped in size.
 - Nothing here has been audited. Found a problem? See `/grants/bug-bounty` on the site and contact us on X.
 
