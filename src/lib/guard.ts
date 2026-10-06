@@ -157,21 +157,32 @@ export function spendAll(bucket: string, limits: { key: string; max: number }[],
     const used = e && e.slot === slot ? e.count : 0;
     if (used + cost > max) return false;
   }
-  const track: typeof ids = [];
-  for (const k of ids) {
-    if (windows.has(k.id)) track.push(k);
+  // A new key is inserted (at zero) as soon as room is found, so the next
+  // key's room check sees the slot as taken; nothing is charged until every
+  // key has a place, and a leaf without room refuses the request.
+  const track: string[] = [];
+  // Pinned keys first: making room for a leaf may evict light leaves, so the
+  // request's own new leaf is placed last and cannot be evicted by its aggregate.
+  for (const k of [...ids].sort((x, y) => Number(y.pinned) - Number(x.pinned))) {
+    if (windows.has(k.id)) track.push(k.id);
     else if (k.pinned) {
-      if (roomForPinned(slot)) track.push(k);
-    } else if (roomForLeaf(slot)) track.push(k);
-    else return false;
+      if (roomForPinned(slot)) {
+        insert(k.id, true, slot, 0);
+        track.push(k.id);
+      }
+    } else if (roomForLeaf(slot)) {
+      insert(k.id, false, slot, 0);
+      track.push(k.id);
+    } else return false;
   }
-  for (const { id, pinned } of track) {
+  for (const id of track) {
     const e = windows.get(id);
-    if (e && e.slot === slot) e.count += cost;
-    else if (e) {
+    if (!e) return false; // evicted while making room for a later key: refuse, never pass untracked
+    if (e.slot === slot) e.count += cost;
+    else {
       e.slot = slot;
       e.count = cost;
-    } else if (windows.size < MAX_KEYS) insert(id, pinned, slot, cost);
+    }
   }
   return true;
 }
