@@ -15,6 +15,7 @@ export const metadata = pageMeta({
 const FILES = [
   { href: "/brand/gleo-mark.webp", name: "Mark, transparent", size: "512 × 512 WebP", plate: "bg-paper" },
   { href: "/brand/gleo-plate.webp", name: "Mark on plate", size: "512 × 512 WebP", plate: "bg-paper-2" },
+  { href: "/brand/gleo-banner.webp", name: "Banner with wordmark", size: "1500 × 500 WebP", plate: "bg-paper-2" },
   { href: "/brand/og.webp", name: "Social card", size: "1200 × 630 WebP", plate: "bg-night" },
 ];
 
@@ -60,10 +61,10 @@ export default function BrandPage() {
         <div className="grid grid-cols-1 items-center gap-10 lg:grid-cols-2 lg:gap-16">
           <div className="min-w-0">
             <Eyebrow>The mark</Eyebrow>
-            <h2 className="t-h2">An open globe with a payment leaving it</h2>
+            <h2 className="t-h2">A globe with a G at its equator</h2>
             <p className="t-lead mt-6 text-fog-2">
-              The G is drawn as a globe whose open side lets a payment out; the yellow dot is that payment. Keep the dot yellow and the stroke ink or
-              white.
+              The Gleo mark draws the letter G across the equator of a line globe: one network for money that crosses borders. Use it in solid ink
+              on light backgrounds or in white on dark ones, with clear space of at least half its height around it.
             </p>
           </div>
           <div className="flex min-w-0 justify-center">
@@ -78,7 +79,7 @@ export default function BrandPage() {
           {FILES.map((f) => (
             <li key={f.href} className="min-w-0 border border-line bg-paper">
               <div className={`flex aspect-[4/3] items-center justify-center p-6 ${f.plate}`}>
-                <img src={f.href} alt={`Gleo ${f.name.toLowerCase()}`} width={512} height={f.href.includes("og") ? 269 : 512} className="max-h-full max-w-full object-contain" />
+                <img src={f.href} alt={`Gleo ${f.name.toLowerCase()}`} width={512} height={f.href.includes("og") ? 269 : f.href.includes("banner") ? 171 : 512} className="max-h-full max-w-full object-contain" />
               </div>
               <div className="flex items-center justify-between gap-3 border-t border-line p-5">
                 <span className="min-w-0">

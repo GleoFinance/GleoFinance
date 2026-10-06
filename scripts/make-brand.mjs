@@ -1,4 +1,4 @@
-/* Generates every brand raster from one vector mark.
+/* Generates every brand raster from the owner's logo and banner.
  *
  *   npm run brand
  *
@@ -11,11 +11,13 @@
  *   src/app/opengraph-image.jpg      1200x630 social card
  *   src/app/twitter-image.jpg        same card for X
  *
- * To use the owner's own logo later, replace MARK_SVG below with the logo's
- * SVG (or load a PNG with sharp) and run the script again.
+ * Since 6 Oct 2026 the mark is the owner's logo: scripts/owner/gleo-logo.png
+ * (transparent, trimmed and padded square) and scripts/owner/gleo-banner.jpg
+ * (the owner's 1500x500 banner). The site draws the mark from the WebP as a
+ * CSS mask, so it can take any text colour.
  */
 import sharp from "sharp";
-import { writeFile, mkdir } from "node:fs/promises";
+import { readFile, writeFile, mkdir } from "node:fs/promises";
 import { fileURLToPath } from "node:url";
 
 const ROOT = new URL("../", import.meta.url);
@@ -25,23 +27,6 @@ const INK = "#0f0f0f";
 const PAPER = "#ffffff";
 const YELLOW = "#fdda24";
 const LAVENDER = "#b7ace8";
-// Mid-tone teal plate: about 3.7:1 against a light (#f2f2f2) and 3.9:1
-// against a dark (#202124) browser tab strip, so the favicon reads in both.
-const PLATE = "#00899a";
-
-// The mark: a G drawn as a globe whose open side lets a payment (the dot) out.
-const markPaths = (stroke, dot) => `
-  <path d="M24.43 8.93 A11 11 0 1 0 27 16 H17.2" fill="none" stroke="${stroke}" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"/>
-  <path d="M16 5 C11.2 9.4 11.2 22.6 16 27" fill="none" stroke="${stroke}" stroke-width="1.3" stroke-linecap="round" opacity="0.55"/>
-  <circle cx="26.6" cy="6.3" r="2.5" fill="${dot}"/>`;
-
-export const MARK_SVG = (stroke = INK, dot = YELLOW) =>
-  `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">${markPaths(stroke, dot)}</svg>`;
-
-const plateSvg = (size, radius) => `<svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}" viewBox="0 0 32 32">
-  <rect width="32" height="32" rx="${radius}" fill="${PLATE}"/>
-  <g transform="translate(2.2 2.6) scale(0.86)">${markPaths("#ffffff", YELLOW)}</g>
-</svg>`;
 
 function ico(pngs) {
   const header = Buffer.alloc(6);
@@ -65,40 +50,48 @@ function ico(pngs) {
   return Buffer.concat([header, ...entries, ...pngs.map((p) => p.data)]);
 }
 
+const LOGO = await readFile(out("scripts/owner/gleo-logo.png"));
+const BANNER = await readFile(out("scripts/owner/gleo-banner.jpg"));
+const logo = (size) => sharp(LOGO).resize(size, size, { fit: "contain", background: { r: 0, g: 0, b: 0, alpha: 0 } }).png().toBuffer();
+// White plate with a hairline: the black globe reads on a light tab strip, the plate itself on a dark one.
+const plateOf = async (size, rounded = true) => {
+  const r = rounded ? Math.round(size * 0.22) : 0;
+  const bg = Buffer.from(`<svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}"><rect x="0.5" y="0.5" width="${size - 1}" height="${size - 1}" rx="${r}" fill="${PAPER}" stroke="${INK}" stroke-opacity="0.18"/></svg>`);
+  return sharp(bg).composite([{ input: await logo(Math.round(size * (size <= 16 ? 0.94 : 0.8))), gravity: "center" }]).png().toBuffer();
+};
+
 // Halftone dots fading in towards the right edge, echoing the home hero.
 const dots = [];
 for (let y = 7; y < 630; y += 14) {
   for (let x = 7; x < 1200; x += 14) {
-    if (x < 900 || (y > 526 && x < 1120)) continue;
+    if (x < 900 || y < 430) continue;
     const r = Math.min(4.2, 4.6 * ((x - 900) / 300));
     if (r > 0.4) dots.push(`<circle cx="${x}" cy="${y}" r="${r.toFixed(2)}" fill="${YELLOW}"/>`);
   }
 }
 
+// Social card: the owner's banner (globe + "Gleo Finance") on white, one line of copy and the domain pill.
 const og = `<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
   <rect width="1200" height="630" fill="${PAPER}"/>
   ${dots.join("")}
-  <g transform="translate(96 84) scale(2.2)">${markPaths(INK, YELLOW)}</g>
-  <text x="178" y="130" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="48" font-weight="500" fill="${INK}" letter-spacing="-1.5">Gleo</text>
-  <text x="96" y="318" font-family="Georgia, 'Times New Roman', serif" font-size="80" fill="${INK}" letter-spacing="-2.4">Cross-border payments</text>
-  <text x="96" y="410" font-family="Georgia, 'Times New Roman', serif" font-size="80" fill="${INK}" letter-spacing="-2.4">meet stablecoins</text>
-  <rect x="96" y="452" width="250" height="6" fill="${LAVENDER}"/>
-  <text x="96" y="520" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="26" fill="${INK}" fill-opacity="0.7">USDG transfers, tokenized stocks and open DeFi on Robinhood Chain.</text>
+  <rect x="96" y="448" width="250" height="6" fill="${LAVENDER}"/>
+  <text x="96" y="510" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="27" fill="${INK}" fill-opacity="0.75">Cross-border USDG payments, tokenized stocks and open DeFi.</text>
   <rect x="834" y="546" width="270" height="44" rx="22" fill="${INK}"/>
   <text x="858" y="575" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="19" fill="${PAPER}">gleo.finance · $GLEO</text>
   <circle cx="1082" cy="568" r="16" fill="${YELLOW}"/>
 </svg>`;
 
 await mkdir(out("public/brand/"), { recursive: true });
-await sharp(Buffer.from(MARK_SVG()), { density: 1200 }).resize(512, 512).webp({ quality: 92 }).toFile(out("public/brand/gleo-mark.webp"));
-const plate = (size) => sharp(Buffer.from(plateSvg(size, 7)), { density: 1200 }).resize(size, size).png().toBuffer();
-await sharp(await plate(512)).webp({ quality: 92 }).toFile(out("public/brand/gleo-plate.webp"));
-await writeFile(out("src/app/icon.png"), await plate(512));
-await writeFile(out("src/app/apple-icon.png"), await sharp(Buffer.from(plateSvg(180, 0)), { density: 600 }).resize(180, 180).png().toBuffer());
+await sharp(await logo(512)).webp({ quality: 95, alphaQuality: 100 }).toFile(out("public/brand/gleo-mark.webp"));
+await sharp(await plateOf(512)).webp({ quality: 92 }).toFile(out("public/brand/gleo-plate.webp"));
+await writeFile(out("src/app/icon.png"), await plateOf(512));
+await writeFile(out("src/app/apple-icon.png"), await plateOf(180, false));
 const sizes = [16, 32, 48];
-await writeFile(out("src/app/favicon.ico"), ico(await Promise.all(sizes.map(async (size) => ({ size, data: await sharp(await plate(size)).ensureAlpha().png().toBuffer() })))));
-const card = await sharp(Buffer.from(og), { density: 144 }).resize(1200, 630).jpeg({ quality: 88 }).toBuffer();
+await writeFile(out("src/app/favicon.ico"), ico(await Promise.all(sizes.map(async (size) => ({ size, data: await sharp(await plateOf(size)).ensureAlpha().png().toBuffer() })))));
+const strip = await sharp(BANNER).resize(1200, 400).png().toBuffer();
+const card = await sharp(Buffer.from(og), { density: 144 }).resize(1200, 630).composite([{ input: strip, left: 0, top: 20 }]).jpeg({ quality: 88 }).toBuffer();
 await writeFile(out("src/app/opengraph-image.jpg"), card);
 await writeFile(out("src/app/twitter-image.jpg"), card);
 await sharp(card).webp({ quality: 85 }).toFile(out("public/brand/og.webp"));
-console.log("brand assets written");
+await sharp(BANNER).webp({ quality: 90 }).toFile(out("public/brand/gleo-banner.webp"));
+console.log("brand assets written (owner logo)");
