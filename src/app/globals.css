@@ -1,0 +1,221 @@
+@import "tailwindcss";
+
+@theme {
+  /* Fog paper, petrol ink, a sea-green accent and a warm flare: the look of
+     a shipping chart and a bank statement, not a crypto dashboard. */
+  --color-paper: #edf0ee;
+  --color-paper-2: #e2e7e4;
+  --color-card: #ffffff;
+  --color-ink: #0a1c24;
+  --color-ink-2: #3d4f57;
+  --color-ink-3: #66767d;
+  --color-line: rgba(10, 28, 36, 0.12);
+  --color-line-2: rgba(10, 28, 36, 0.24);
+
+  --color-sea: #0c7a64;
+  --color-sea-deep: #075a49;
+  --color-sea-soft: #d6ece5;
+  --color-flare: #e8612d;
+  --color-flare-deep: #b9461a;
+  --color-flare-soft: #fbe2d6;
+  --color-up: #0c7a64;
+  --color-down: #c4382a;
+  --color-down-soft: #f6dcd8;
+
+  --color-night: #0a1c24;
+  --color-night-2: #112b35;
+  --color-night-3: #1b3d49;
+  --color-fog: #e6eeeb;
+  --color-fog-2: #a9bcc0;
+
+  --font-sans: var(--font-hanken), "Hanken Grotesk", system-ui, -apple-system, "Segoe UI", Helvetica, Arial, sans-serif;
+  --font-display: var(--font-bricolage), "Bricolage Grotesque", system-ui, sans-serif;
+  --font-mono: var(--font-plex-mono), "IBM Plex Mono", ui-monospace, Menlo, Consolas, monospace;
+}
+
+:root {
+  color-scheme: light;
+}
+
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 96px;
+}
+
+body {
+  background: var(--color-paper);
+  color: var(--color-ink);
+}
+
+::selection {
+  background: var(--color-sea);
+  color: #fff;
+}
+
+@layer components {
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    border-radius: 999px;
+    border: 1px solid transparent;
+    font-weight: 600;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+  }
+  .btn:disabled {
+    cursor: not-allowed;
+    opacity: 0.55;
+  }
+  .btn-ink {
+    background: var(--color-ink);
+    color: var(--color-fog);
+  }
+  .btn-ink:not(:disabled):hover {
+    background: var(--color-night-3);
+  }
+  .btn-accent {
+    background: var(--color-sea);
+    color: #fff;
+  }
+  .btn-accent:not(:disabled):hover {
+    background: var(--color-sea-deep);
+  }
+  .btn-line {
+    border-color: var(--color-line-2);
+    color: var(--color-ink);
+    background: transparent;
+  }
+  .btn-line:not(:disabled):hover {
+    border-color: var(--color-ink);
+  }
+  .btn-fog {
+    background: var(--color-fog);
+    color: var(--color-ink);
+  }
+  .btn-fog:not(:disabled):hover {
+    background: #fff;
+  }
+
+  .field {
+    width: 100%;
+    min-width: 0;
+    border-radius: 10px;
+    border: 1px solid var(--color-line-2);
+    background: #fff;
+    padding: 0.7rem 0.85rem;
+    font-size: 15px;
+    color: var(--color-ink);
+    outline: none;
+  }
+  .field:focus {
+    border-color: var(--color-sea);
+    box-shadow: 0 0 0 3px var(--color-sea-soft);
+  }
+
+  .label {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--color-ink-3);
+  }
+
+  /* Body copy inside long-form pages (legal, articles). */
+  .prose-gleo {
+    font-size: 16.5px;
+    line-height: 1.7;
+    color: var(--color-ink-2);
+  }
+  .prose-gleo h2 {
+    margin-top: 2.4rem;
+    margin-bottom: 0.7rem;
+    font-family: var(--font-display);
+    font-size: 1.55rem;
+    font-weight: 700;
+    line-height: 1.2;
+    letter-spacing: -0.01em;
+    color: var(--color-ink);
+  }
+  .prose-gleo h3 {
+    margin-top: 1.6rem;
+    margin-bottom: 0.4rem;
+    font-weight: 700;
+    color: var(--color-ink);
+  }
+  .prose-gleo p,
+  .prose-gleo ul,
+  .prose-gleo ol {
+    margin-bottom: 1rem;
+  }
+  .prose-gleo ul {
+    list-style: disc;
+    padding-left: 1.3rem;
+  }
+  .prose-gleo ol {
+    list-style: decimal;
+    padding-left: 1.3rem;
+  }
+  .prose-gleo li {
+    margin-bottom: 0.35rem;
+  }
+  .prose-gleo a {
+    color: var(--color-sea-deep);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+  .prose-gleo strong {
+    color: var(--color-ink);
+  }
+  .prose-gleo code {
+    font-family: var(--font-mono);
+    font-size: 0.9em;
+    background: var(--color-paper-2);
+    padding: 0.1em 0.35em;
+    border-radius: 4px;
+    word-break: break-all;
+  }
+}
+
+/* Meridian grid used behind heroes: thin longitude lines on the paper. */
+.meridians {
+  background-image:
+    linear-gradient(to right, rgba(10, 28, 36, 0.07) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(10, 28, 36, 0.05) 1px, transparent 1px);
+  background-size: 88px 100%, 100% 88px;
+}
+.meridians-night {
+  background-image:
+    linear-gradient(to right, rgba(230, 238, 235, 0.07) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(230, 238, 235, 0.05) 1px, transparent 1px);
+  background-size: 88px 100%, 100% 88px;
+}
+
+@keyframes travel {
+  from {
+    stroke-dashoffset: 240;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+.route-travel {
+  stroke-dasharray: 6 8;
+  animation: travel 6s linear infinite;
+}
+@keyframes blink {
+  50% {
+    opacity: 0.35;
+  }
+}
+.live-dot {
+  animation: blink 1.6s ease-in-out infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .route-travel,
+  .live-dot {
+    animation: none;
+  }
+}
