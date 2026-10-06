@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { CHAIN, serverRpc } from "@/config/brand";
-import { badBody, clientNet, readJson, spend, tooMany } from "@/lib/guard";
+import { badBody, clientNet, readJson, spend, spendClient, tooMany } from "@/lib/guard";
 
 export const dynamic = "force-dynamic";
 
@@ -36,6 +36,10 @@ const MAX_LOG_CALLS = 3;
 const COST: Record<string, number> = { eth_getLogs: 10, eth_call: 2, eth_estimateGas: 2 };
 const BUDGET = 600;
 const WINDOW = 600;
+// Off Vercel without trusted proxy headers every visitor shares one key;
+// it gets a larger budget, and the browser falls back to the public RPC
+// directly when the relay answers 429, so pages keep working.
+const DIRECT_BUDGET = 6_000;
 // Without a trusted edge (self-hosted), forwarded headers can be forged, so a
 // site-wide ceiling applies too. On Vercel the per-network limit is enough.
 const SITE_BUDGET = 20_000;
@@ -91,7 +95,7 @@ export async function POST(request: Request) {
   }
   if (logCalls > MAX_LOG_CALLS) return NextResponse.json({ error: `At most ${MAX_LOG_CALLS} eth_getLogs per request.` }, { status: 400 });
   if (logSpan > MAX_LOG_SPAN) return NextResponse.json({ error: `eth_getLogs spans add up to more than ${MAX_LOG_SPAN} blocks.` }, { status: 400 });
-  if (!spend("rpc", clientNet(request), cost, BUDGET, WINDOW)) return tooMany();
+  if (!spendClient("rpc", clientNet(request), cost, BUDGET, WINDOW, DIRECT_BUDGET)) return tooMany();
   if (!trustedEdge && !spend("rpc-site", "all", cost, SITE_BUDGET, WINDOW)) return tooMany();
 
   const clean = calls.map((c, i) => {

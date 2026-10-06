@@ -57,7 +57,11 @@ npm start            # http://localhost:4880
 | `ROBINHOOD_RPC_URL` | Private RPC for server reads. Falls back to the public RPC. |
 | `NEXT_PUBLIC_ROBINHOOD_RPC_URL` | Private RPC the browser may use as a fallback. Restrict it to your domain. |
 | `NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID` | WalletConnect project id from cloud.reown.com. Without it the option shows "Not configured on this site yet". |
-| `TRUST_PROXY_HEADERS` | Set to `1` only when self-hosting behind your own proxy that overwrites `X-Forwarded-For`. On Vercel it is not needed. Without it, direct traffic shares one rate-limit budget. |
+| `TRUST_PROXY_HEADERS` | Set to `1` only when self-hosting behind your own proxy. The client address is then the rightmost `X-Forwarded-For` entry (the one your proxy appended). Not needed on Vercel. |
+| `TRUSTED_PROXY_HOPS` | With `TRUST_PROXY_HEADERS=1`: which entry from the right to use when several of your proxies append (default `1`). |
+| `CLIENT_IP_HEADER` | With `TRUST_PROXY_HEADERS=1`: read the address from this header instead (for example `x-real-ip`). Set it only if your proxy overwrites that header on every request. |
+
+Without trusted headers (self-hosted, no proxy) all visitors share one larger relay budget, and when the relay answers 429 or fails, browsers read the public Robinhood Chain RPC directly for a minute, so pages and wallet flows keep working. Live figures (`/api/network`, `/api/assets`, prices, FX) are read and cached by the server and do not use any visitor's relay budget.
 
 Put them in `.env.local` locally or in your host's environment settings. Nothing is required.
 
@@ -94,7 +98,8 @@ scripts/               resolve-assets.mjs, make-brand.mjs
 ## Security and status
 
 - No custody: transactions are built in the browser and signed by your wallet.
-- The RPC relay forwards read methods only; `eth_getLogs` needs numeric `fromBlock` and `toBlock` with a span of at most 20,000 blocks. API routes cap body size and rate-limit per network (IPv6 per /64). Forwarded IP headers are trusted only on Vercel or with `TRUST_PROXY_HEADERS=1`; the in-memory limiter is capped at 10,000 keys and sends newcomers to a small shared overflow budget when full.
+- The RPC relay forwards read methods only; `eth_getLogs` needs numeric `fromBlock` and `toBlock` with a span of at most 20,000 blocks. API routes cap body size and rate-limit per network (IPv4 address or IPv6 /64) and per aggregate (IPv4 /24 or IPv6 /48, sixteen times the budget). Forwarded IP headers are trusted only on Vercel or with `TRUST_PROXY_HEADERS=1`. The in-memory limiter is capped at 10,000 keys; when full it evicts the lightest per-network entries from a random sample; aggregates are never evicted inside their window and may use at most 20% of the slots (beyond that, new aggregates go untracked rather than locking anyone out).
+- Trade-offs: limits live in each server instance's memory and are best effort; users behind carrier-grade NAT may share an aggregate; when the relay is limited, browsers read the public RPC directly instead.
 - Practice receipts are kept in the browser only and capped in size.
 - Nothing here has been audited. Found a problem? See `/grants/bug-bounty` on the site and contact us on X.
 
